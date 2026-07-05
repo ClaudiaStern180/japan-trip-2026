@@ -236,12 +236,128 @@
   .city-panel { display: none; }
   .city-panel.active { display: block; animation: fadeIn 0.25s ease; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ---- PIN Lock Screen ---- */
+  #lockscreen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    padding: 24px;
+  }
+  #lockscreen .lock-emoji { font-size: 40px; margin-bottom: 12px; }
+  #lockscreen h2 {
+    color: var(--cream); font-size: 19px; font-weight: 800; margin: 0 0 6px;
+  }
+  #lockscreen p { color: rgba(247,243,234,0.6); font-size: 12.5px; margin: 0 0 24px; text-align: center; }
+  #pin-dots { display: flex; gap: 14px; margin-bottom: 22px; }
+  .pin-dot {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 2px solid var(--gold);
+    background: transparent;
+    transition: background 0.15s;
+  }
+  .pin-dot.filled { background: var(--gold); }
+  #pin-input {
+    position: absolute; opacity: 0; pointer-events: none;
+  }
+  #lockscreen .pin-error {
+    color: #E07A5F; font-size: 12px; height: 16px; margin-bottom: 10px;
+  }
+  #lockscreen .pin-keypad {
+    display: grid; grid-template-columns: repeat(3, 64px); gap: 12px;
+  }
+  #lockscreen .pin-key {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--navy-light); color: var(--cream);
+    border: none; font-size: 20px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  #lockscreen .pin-key:active { background: var(--gold); color: var(--navy); }
+  #lockscreen .pin-key.empty { visibility: hidden; }
+  #app { display: none; }
+  #app.unlocked { display: flex; }
 </style>
 </head>
 <body>
 
+<div id="lockscreen">
+  <div class="lock-emoji">🔒</div>
+  <h2>Japan 2026</h2>
+  <p>PIN eingeben, um die Reise-App zu öffnen</p>
+  <div id="pin-dots">
+    <div class="pin-dot"></div>
+    <div class="pin-dot"></div>
+    <div class="pin-dot"></div>
+    <div class="pin-dot"></div>
+  </div>
+  <div class="pin-error" id="pin-error"></div>
+  <div class="pin-keypad">
+    <button class="pin-key" onclick="pinPress('1')">1</button>
+    <button class="pin-key" onclick="pinPress('2')">2</button>
+    <button class="pin-key" onclick="pinPress('3')">3</button>
+    <button class="pin-key" onclick="pinPress('4')">4</button>
+    <button class="pin-key" onclick="pinPress('5')">5</button>
+    <button class="pin-key" onclick="pinPress('6')">6</button>
+    <button class="pin-key" onclick="pinPress('7')">7</button>
+    <button class="pin-key" onclick="pinPress('8')">8</button>
+    <button class="pin-key" onclick="pinPress('9')">9</button>
+    <button class="pin-key empty"></button>
+    <button class="pin-key" onclick="pinPress('0')">0</button>
+    <button class="pin-key" onclick="pinBackspace()">⌫</button>
+  </div>
+</div>
+
 <div id="app">
-  <div id="topbar">
+
+<script>
+  const APP_PIN = '2261';
+  let pinEntered = '';
+
+  function renderPinDots() {
+    document.querySelectorAll('.pin-dot').forEach((dot, i) => {
+      dot.classList.toggle('filled', i < pinEntered.length);
+    });
+  }
+
+  function pinPress(digit) {
+    if (pinEntered.length >= 4) return;
+    pinEntered += digit;
+    renderPinDots();
+    document.getElementById('pin-error').textContent = '';
+    if (pinEntered.length === 4) {
+      setTimeout(checkPin, 150);
+    }
+  }
+
+  function pinBackspace() {
+    pinEntered = pinEntered.slice(0, -1);
+    renderPinDots();
+  }
+
+  function checkPin() {
+    if (pinEntered === APP_PIN) {
+      localStorage.setItem('japanAppUnlocked', 'true');
+      unlockApp();
+    } else {
+      document.getElementById('pin-error').textContent = 'Falsche PIN, bitte erneut versuchen';
+      pinEntered = '';
+      renderPinDots();
+    }
+  }
+
+  function unlockApp() {
+    document.getElementById('lockscreen').style.display = 'none';
+    document.getElementById('app').classList.add('unlocked');
+  }
+
+  if (localStorage.getItem('japanAppUnlocked') === 'true') {
+    unlockApp();
+  }
+</script>
+
+<div id="topbar">
     <div class="brand">
       <h1>Japan 2026 ✈️</h1>
       <span class="sub">5 Reisende</span>
@@ -437,10 +553,10 @@ const TRAVEL = {
   dates: '13.08. – 27.08.2026',
   emoji: '✈️',
   flights: [
-    { num: 1, title: 'Ankunft Tokio (Haneda)', date: '13.08. Mi', meta: 'Landung ca. 22:20 Uhr · Suica kaufen<br><b>Transfer gebucht:</b> Abholung 23:00 Uhr, Booking.com Rides, Großraumwagen (max. 5 Pers.)<br>Buchungsnr. 505910979 · Ride-ID 397934291 · 56,64 € · kostenfreie Stornierung bis 12.08. 23:00 Uhr (JP-Zeit)' },
+    { num: 1, title: 'Anreise: Frankfurt → Tokio (Haneda)', date: '12.–13.08. Mi/Do', meta: '<b>Emirates · Buchungsnr. IG3WR2</b><br>FRA → DXB: EK048, Mi 12.08. 22:20 → Do 13.08. 06:40<br>DXB → HND: EK312, Do 13.08. 07:40 → 22:20 (Umsteigezeit Dubai: 1 Std.)<br>Economy Flex · alle 5 Reisenden · Suica kaufen<br><b>Transfer gebucht:</b> Abholung 23:00 Uhr, Booking.com Rides, Großraumwagen (max. 5 Pers.)<br>Buchungsnr. 505910979 · Ride-ID 397934291 · 56,64 € · kostenfreie Stornierung bis 12.08. 23:00 Uhr (JP-Zeit)' },
     { num: 2, title: 'Flug Osaka → Okinawa', date: '22.08. Sa', meta: '<b>MM219</b> · Abflug 11:45 Uhr<br>Buchungscode: FP5DXF (alle 5 Reisenden)' },
     { num: 3, title: 'Flug Okinawa → Tokio', date: '26.08. Mi', meta: '<b>MM504</b> · Abflug 12:05 Uhr<br>Buchungscode: 6U69GT (alle 5 Reisenden)<br>Danach Transfer & Shopping in Shinjuku' },
-    { num: 4, title: 'Abflug Tokio (Narita)', date: '27.08. Do', meta: 'Abflug 22:30 Uhr · Freier Vormittag für letzte Souvenirs davor' },
+    { num: 4, title: 'Abreise: Tokio (Narita) → Frankfurt', date: '27.–28.08. Do/Fr', meta: '<b>Emirates · Buchungsnr. IG3WR2</b><br>NRT → DXB: EK319, Do 27.08. 22:30 → Fr 28.08. 04:05<br>DXB → FRA: EK045, Fr 28.08. 08:25 → 13:15 (Umsteigezeit Dubai: 4 Std. 20 Min.)<br>Economy Flex · alle 5 Reisenden<br>Freier Vormittag am 27.08. für letzte Souvenirs davor' },
   ]
 };
 
@@ -574,9 +690,11 @@ async function loadFiles(category) {
     .select('*').eq('category', category).order('created_at', { ascending: false });
   if (error || !data) { listEl.innerHTML = ''; return; }
 
-  listEl.innerHTML = data.map(f => {
-    const { data: urlData } = sbClient.storage.from(BUCKET).getPublicUrl(f.storage_path);
+  const cards = await Promise.all(data.map(async f => {
+    const { data: urlData } = await sbClient.storage.from(BUCKET)
+      .createSignedUrl(f.storage_path, 3600); // Link gültig für 1 Stunde
     const icon = f.filename.toLowerCase().endsWith('.pdf') ? '📄' : '🖼️';
+    const href = urlData ? urlData.signedUrl : '#';
     return `
       <div class="file-card">
         <span class="ficon">${icon}</span>
@@ -584,11 +702,12 @@ async function loadFiles(category) {
           <div class="fname">${f.filename}</div>
           <div class="fmeta">${f.file_size_kb || 0} KB</div>
         </div>
-        <a class="fdownload" href="${urlData.publicUrl}" target="_blank" rel="noopener">Öffnen</a>
+        <a class="fdownload" href="${href}" target="_blank" rel="noopener">Öffnen</a>
         <button class="fdelete" onclick="deleteFile('${f.id}', '${f.storage_path}', '${category}')">✕</button>
       </div>
     `;
-  }).join('');
+  }));
+  listEl.innerHTML = cards.join('');
 }
 
 async function deleteFile(id, storagePath, category) {
