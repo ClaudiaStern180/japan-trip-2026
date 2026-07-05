@@ -285,9 +285,12 @@ const CITIES = {
     emoji: '🗾',
     center: [35.685, 139.745],
     zoom: 12,
+    stations: [
+      { name: 'Ryogoku Station (JR Sobu/Toei Oedo)', lat: 35.6959325, lng: 139.7928696 },
+    ],
     hotels: [
       { num: 1, title: 'Sumo Hotel Ryogoku', lat: 35.6907391, lng: 139.7910614,
-        meta: '🚇 Ryogoku Station (JR Sobu-Linie / Toei Oedo-Linie), 2–3 Min.<br>Ryogoku, Sumo-Viertel' },
+        meta: '🚇 Ryogoku Station (JR Sobu-Linie / Toei Oedo-Linie), 2–3 Min.<br>Ryogoku, Sumo-Viertel<br><b>13.–17.08.2026</b> · Check-in ab 16:00 Uhr (Self-Check-in am Tablet im EG)<br>Buchungsnr. 5352711039' },
     ],
     dayGroups: [
       { label: 'Asakusa & Akihabara', color: 'var(--day-a)', items: [
@@ -321,6 +324,12 @@ const CITIES = {
     emoji: '⛩️',
     center: [35.0, 135.74],
     zoom: 12,
+    stations: [
+      { name: 'Kyoto Station (Hachijo-Ausgang)', lat: 34.9839239, lng: 135.7590942 },
+      { name: 'Shijo Station', lat: 35.0024081, lng: 135.7597178 },
+      { name: 'Sanjo Station', lat: 35.0094432, lng: 135.7723025 },
+      { name: 'Umekoji-Kyotonishi Station', lat: 34.9888864, lng: 135.7430949 },
+    ],
     hotels: [
       { num: 2, title: 'Hotel Keihan Kyoto Hachijoguchi', lat: 34.9808778, lng: 135.7612905, meta: '🚇 Kyoto Station (Hachijo-Ausgang), 1 Min.' },
       { num: 3, title: 'IMU Hotel Kyoto', lat: 35.0012252, lng: 135.7568286, meta: '🚇 Shijo (Karasuma-Linie) / Karasuma (Hankyu), 4–5 Min.' },
@@ -361,6 +370,12 @@ const CITIES = {
     emoji: '🐙',
     center: [34.678, 135.505],
     zoom: 13,
+    stations: [
+      { name: 'JR Namba Station', lat: 34.6660463, lng: 135.4952492 },
+      { name: 'Namba Station', lat: 34.6670979, lng: 135.5003424 },
+      { name: 'Shinsaibashi Station', lat: 34.6750572, lng: 135.5003772 },
+      { name: 'Nipponbashi Station', lat: 34.6669677, lng: 135.5061197 },
+    ],
     hotels: [
       { num: 1, title: 'APA Hotel & Resort Namba Ekimae Tower', lat: 34.6660794, lng: 135.495971, meta: '🚇 JR Namba Station, 1 Min. · Onsen, viele Familienzimmer' },
       { num: 2, title: 'KOKO Hotel Namba Sennichimae', lat: 34.6673828, lng: 135.5053386, meta: '🚇 Namba Station, 3–5 Min. · Familienzimmer' },
@@ -394,7 +409,7 @@ const CITIES = {
     center: [26.45, 127.85],
     zoom: 9,
     hotels: [
-      { num: 1, title: 'Hotel wird noch ergänzt', lat: 26.304, lng: 127.7585, meta: 'Sobald gebucht, hier eintragen – Region Chatan/Naha empfohlen' },
+      { num: 1, title: 'Laguna Garden Hotel', lat: 26.280555, lng: 127.7382757, meta: 'Ginowan · <b>22.–26.08.2026</b><br>Check-in ab 14:00 Uhr · Check-out bis 11:00 Uhr · Superior-Zweibettzimmer mit Meerblick, Frühstück inkl.<br>Buchungsnr. 9020730209956 · PIN 197365 · Reservierungsnr. 2481282920<br>(1 von 2 Buchungen für die Gruppe – zweite Bestätigung separat)' },
     ],
     dayGroups: [
       { label: 'Tag 10 · 22.08. Sa · Ankunft & Araha Beach', color: 'var(--day-a)', items: [
@@ -404,14 +419,15 @@ const CITIES = {
       { label: 'Tag 11 · 23.08. So · Kerama-Inseln', color: 'var(--day-b)', items: [
         { num: 4, title: 'Tomari Fährterminal (Kerama-Inseln)', lat: 26.2236035, lng: 127.6837669, meta: 'Fähre nach Zamami/Tokashiki · Schildkröten-Schnorcheln vorab buchen' },
         { num: 5, title: 'Cape Manzamo', lat: 26.5052353, lng: 127.8504781, meta: 'Sonnenuntergang · berühmte Elefanten-Klippe' },
+        { num: 6, title: 'Blue Cave Schnorcheln (Bokenjima)', lat: 26.4425977, lng: 127.7734662, meta: '14:30 Uhr · Bootstour zur Blauen Grotte, Onna<br>Buchungsnr. BR-1408873863 · So. 23.08.2026<br>Mitbringen: Badesachen, Handtuch, Wechselkleidung, Sandalen' },
       ]},
       { label: 'Tag 12 · 24.08. Mo · Churaumi & Emerald Beach', color: 'var(--day-c)', items: [
-        { num: 6, title: 'Okinawa Churaumi Aquarium', lat: 26.694338, lng: 127.8780131, meta: 'Walhaie & Mantas im riesigen Kuroshio-Becken' },
-        { num: 7, title: 'Emerald Beach', lat: 26.6991832, lng: 127.8775903, meta: 'Baden & Entspannen direkt neben dem Aquarium' },
+        { num: 7, title: 'Okinawa Churaumi Aquarium', lat: 26.694338, lng: 127.8780131, meta: 'Walhaie & Mantas im riesigen Kuroshio-Becken' },
+        { num: 8, title: 'Emerald Beach', lat: 26.6991832, lng: 127.8775903, meta: 'Baden & Entspannen direkt neben dem Aquarium' },
       ]},
     ],
     food: [
-      { num: 8, title: 'Kokusai-dori Restaurants', lat: 26.2151469, lng: 127.684745, meta: 'Okinawa-Abschiedsessen & letzte Souvenirs', tag: 'NAHA' },
+      { num: 9, title: 'Kokusai-dori Restaurants', lat: 26.2151469, lng: 127.684745, meta: 'Okinawa-Abschiedsessen & letzte Souvenirs', tag: 'NAHA' },
     ]
   }
 };
@@ -421,9 +437,9 @@ const TRAVEL = {
   dates: '13.08. – 27.08.2026',
   emoji: '✈️',
   flights: [
-    { num: 1, title: 'Ankunft Tokio (Haneda)', date: '13.08. Mi', meta: 'Landung 22:20 Uhr · Suica kaufen · Transfer zum Hotel' },
-    { num: 2, title: 'Flug Osaka → Okinawa', date: '22.08. Sa', meta: 'KIX/ITM → OKA · ca. 2h20 Flugzeit' },
-    { num: 3, title: 'Flug Okinawa → Tokio', date: '26.08. Mi', meta: 'OKA → HND/NRT · Frühflug, danach Transfer & Shopping in Shinjuku' },
+    { num: 1, title: 'Ankunft Tokio (Haneda)', date: '13.08. Mi', meta: 'Landung ca. 22:20 Uhr · Suica kaufen<br><b>Transfer gebucht:</b> Abholung 23:00 Uhr, Booking.com Rides, Großraumwagen (max. 5 Pers.)<br>Buchungsnr. 505910979 · Ride-ID 397934291 · 56,64 € · kostenfreie Stornierung bis 12.08. 23:00 Uhr (JP-Zeit)' },
+    { num: 2, title: 'Flug Osaka → Okinawa', date: '22.08. Sa', meta: '<b>MM219</b> · Abflug 11:45 Uhr<br>Buchungscode: FP5DXF (alle 5 Reisenden)' },
+    { num: 3, title: 'Flug Okinawa → Tokio', date: '26.08. Mi', meta: '<b>MM504</b> · Abflug 12:05 Uhr<br>Buchungscode: 6U69GT (alle 5 Reisenden)<br>Danach Transfer & Shopping in Shinjuku' },
     { num: 4, title: 'Abflug Tokio (Narita)', date: '27.08. Do', meta: 'Abflug 22:30 Uhr · Freier Vormittag für letzte Souvenirs davor' },
   ]
 };
@@ -624,6 +640,18 @@ function initMap(cityKey) {
     const bounds = L.latLngBounds(points.map(p => [p.lat, p.lng]));
     map.fitBounds(bounds, { padding: [30, 30] });
   }
+
+  // Kleine Symbole für die nächsten Bahnstationen
+  (city.stations || []).forEach(s => {
+    const stationIcon = L.divIcon({
+      className: '',
+      html: `<div style="width:20px;height:20px;border-radius:50%;background:white;border:2px solid #2E5C8A;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 1px 3px rgba(0,0,0,0.35);">🚉</div>`,
+      iconSize: [20, 20], iconAnchor: [10, 10], popupAnchor: [0, -10]
+    });
+    L.marker([s.lat, s.lng], { icon: stationIcon }).addTo(map)
+      .bindPopup(`<b>🚉 ${s.name}</b>`);
+  });
+
   maps[cityKey] = map;
 }
 
