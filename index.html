@@ -465,6 +465,10 @@ const CITIES = {
     stations: [
       { name: 'Ryogoku Station (JR Sobu/Toei Oedo)', lat: 35.6959325, lng: 139.7928696 },
     ],
+    shopping: [
+      { name: 'Nike Harajuku', lat: 35.6694946, lng: 139.7036369 },
+      { name: 'Nike Shibuya Scramble Square', lat: 35.6583189, lng: 139.7022323 },
+    ],
     hotels: [
       { num: 1, title: 'Sumo Hotel Ryogoku', lat: 35.6907391, lng: 139.7910614,
         link: 'https://www.booking.com/hotel/jp/sumo-ryugoku.de.html',
@@ -513,6 +517,9 @@ const CITIES = {
       { name: 'Shijo Station', lat: 35.0024081, lng: 135.7597178 },
       { name: 'Sanjo Station', lat: 35.0094432, lng: 135.7723025 },
       { name: 'Umekoji-Kyotonishi Station', lat: 34.9888864, lng: 135.7430949 },
+    ],
+    shopping: [
+      { name: 'NIKE Kyoto (Kawaramachi)', lat: 35.0077781, lng: 135.7692969 },
     ],
     hotels: [
       { num: 2, title: 'Hotel Keihan Kyoto Hachijoguchi', lat: 34.9808778, lng: 135.7612905,
@@ -574,6 +581,9 @@ const CITIES = {
       { name: 'Namba Station', lat: 34.6670979, lng: 135.5003424 },
       { name: 'Shinsaibashi Station', lat: 34.6750572, lng: 135.5003772 },
       { name: 'Nipponbashi Station', lat: 34.6669677, lng: 135.5061197 },
+    ],
+    shopping: [
+      { name: 'Nike Osaka (Shinsaibashi)', lat: 34.6720485, lng: 135.5006295 },
     ],
     hotels: [
       { num: 1, title: 'APA Hotel & Resort Namba Ekimae Tower', lat: 34.6660794, lng: 135.495971,
@@ -914,6 +924,17 @@ function initMap(cityKey) {
     });
     L.marker([s.lat, s.lng], { icon: stationIcon }).addTo(map)
       .bindPopup(`<b>🚉 ${s.name}</b>`);
+  });
+
+  // Kleine Symbole für Nike Stores
+  (city.shopping || []).forEach(s => {
+    const shopIcon = L.divIcon({
+      className: '',
+      html: `<div style="width:20px;height:20px;border-radius:50%;background:white;border:2px solid #22201C;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 1px 3px rgba(0,0,0,0.35);">👟</div>`,
+      iconSize: [20, 20], iconAnchor: [10, 10], popupAnchor: [0, -10]
+    });
+    L.marker([s.lat, s.lng], { icon: shopIcon }).addTo(map)
+      .bindPopup(`<b>👟 ${s.name}</b>`);
   });
 
   maps[cityKey] = map;
