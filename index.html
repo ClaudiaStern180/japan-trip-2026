@@ -244,6 +244,80 @@
     height: 14px;
   }
 
+  /* ---- Währungsrechner ---- */
+  .currency-box {
+    background: var(--paper);
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 1px 3px rgba(27,42,65,0.08);
+    border: 1px solid var(--line);
+  }
+  .currency-field {
+    margin-bottom: 14px;
+  }
+  .currency-field label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .currency-input-wrap {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: var(--cream);
+  }
+  .currency-input-wrap:focus-within { border-color: var(--gold); }
+  .currency-input-wrap .flag { font-size: 18px; margin-right: 8px; }
+  .currency-input-wrap input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    outline: none;
+    font-family: inherit;
+  }
+  .currency-swap {
+    text-align: center;
+    font-size: 20px;
+    color: var(--gold);
+    margin: -4px 0 10px;
+  }
+  .currency-rate-info {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+  .currency-quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .currency-quick button {
+    flex: 1;
+    min-width: 70px;
+    background: var(--line);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    cursor: pointer;
+    font-family: inherit;
+  }
+
   .upload-box {
     border: 1.5px dashed var(--line);
     border-radius: 12px;
@@ -429,6 +503,7 @@
       <button data-city="osaka">🐙 Osaka</button>
       <button data-city="okinawa">🏝️ Okinawa</button>
       <button data-city="reise">✈️ An-/Abreise</button>
+      <button data-city="waehrung">💱 Yen/€</button>
     </div>
   </div>
 
@@ -496,13 +571,11 @@ const CITIES = {
       ]},
     ],
     food: [
-      { num: 9, title: 'SUMOLAND Tokyo Ryogoku', lat: 35.6946727, lng: 139.7952531, link: 'https://sumoland.jp/', meta: 'Sumo-Show + Chanko Nabe · sehr beliebt, vorab buchen', tag: 'CHANKO' },
-      { num: 10, title: 'Chanko Kirishima', lat: 35.695655, lng: 139.7916042, link: 'https://c-kirishima.com/', meta: 'Klassisches Chanko-Nabe · gut für Gruppen', tag: 'CHANKO' },
-      { num: 11, title: 'Sumo Chaya Terao', lat: 35.6945185, lng: 139.791678, link: 'https://www.sumouchaya-terao.jp/english.html', meta: 'Traditionell, günstiges Lunch-Set (~1000¥)', tag: 'CHANKO' },
-      { num: 12, title: 'Gottsuan Sakaba', lat: 35.6927351, lng: 139.7945242, link: 'https://www.tripadvisor.com/Restaurant_Review-g1066459-d27760893-Reviews-Gottsuan_Sakaba_Ryogoku-Sumida_Tokyo_Tokyo_Prefecture_Kanto.html', meta: 'Familiär, Wirt ist ehem. Sumo-Ringer', tag: 'CHANKO' },
-      { num: 13, title: "Beck's Coffee Shop", lat: 35.6958669, lng: 139.7922972, link: 'https://www.jr-foods.co.jp/becks/', meta: 'Warme Frühstücksgerichte, direkt am Bahnhof · ab 7 Uhr', tag: 'FRÜHSTÜCK' },
-      { num: 14, title: 'Oasis Ryogoku', lat: 35.6908884, lng: 139.7919627, link: 'https://tabelog.com/en/tokyo/A1312/A131201/13256200/', meta: 'Gemütliches Bagel-Café', tag: 'FRÜHSTÜCK' },
-      { num: 15, title: 'Saint Marc Café', lat: 35.6954732, lng: 139.7921092, link: 'https://www.saint-marc-hd.com/saintmarccafe/', meta: 'Sandwiches & Gebäck · ab 7 Uhr', tag: 'FRÜHSTÜCK' },
+      { num: 9, title: 'Chanko Kirishima', lat: 35.695655, lng: 139.7916042, link: 'https://c-kirishima.com/', meta: 'Klassisches Chanko-Nabe · gut für Gruppen<br>✅ Vegetarisch: Optionen im Menü vorhanden', tag: 'CHANKO' },
+      { num: 10, title: 'Chanko Tomoegata', lat: 35.694921, lng: 139.7925488, link: 'https://www.tomoegata.com/', meta: 'Traditionsreiches Chanko-Restaurant, sehr familienfreundlich<br>✅ Vegetarisch: auf Anfrage bei Reservierung anpassbar', tag: 'CHANKO' },
+      { num: 11, title: "Beck's Coffee Shop", lat: 35.6958669, lng: 139.7922972, link: 'https://www.jr-foods.co.jp/becks/', meta: 'Warme Frühstücksgerichte, direkt am Bahnhof · ab 7 Uhr<br>✅ Vegetarisch: Café-Konzept, unproblematisch', tag: 'FRÜHSTÜCK' },
+      { num: 12, title: 'Oasis Ryogoku', lat: 35.6908884, lng: 139.7919627, link: 'https://tabelog.com/en/tokyo/A1312/A131201/13256200/', meta: 'Gemütliches Bagel-Café<br>✅ Vegetarisch: mehrere Bagel-Varianten möglich', tag: 'FRÜHSTÜCK' },
+      { num: 13, title: 'Saint Marc Café', lat: 35.6954732, lng: 139.7921092, link: 'https://www.saint-marc-hd.com/saintmarccafe/', meta: 'Sandwiches & Gebäck · ab 7 Uhr<br>✅ Vegetarisch: Café-Konzept, unproblematisch', tag: 'FRÜHSTÜCK' },
     ]
   },
 
@@ -550,11 +623,10 @@ const CITIES = {
       ]},
     ],
     food: [
-      { num: 13, title: 'Katsugyu Pontocho', lat: 35.0070151, lng: 135.7710372, link: 'https://en.gyukatsu-kyotokatsugyu.com/store/pontochohonten', meta: 'Gyukatsu · beliebt, gut für Gruppen', tag: 'PONTOCHO' },
-      { num: 14, title: 'Gion Loka', lat: 35.0015905, lng: 135.7784572, link: 'https://sowaka.com/eng/restaurant/', meta: 'Kaiseki, gehoben · unbedingt vorab reservieren', tag: 'GION' },
-      { num: 15, title: 'Nishiki Market', lat: 35.0050258, lng: 135.764723, link: 'https://www.kyoto-nishiki.or.jp/en/', meta: 'Streetfood-Markt zum Durchprobieren', tag: 'MARKT' },
-      { num: 16, title: 'Nishiki Market Alley – Moon and Back', lat: 35.0051762, lng: 135.7622938, link: 'https://www.moonandbackkyoto.com/', meta: 'Ramen, auch vegan/glutenfrei/halal', tag: 'MARKT' },
-      { num: 17, title: 'Katsugyu Kyoto Ekimae', lat: 34.9893363, lng: 135.7606275, link: 'https://tabelog.com/en/kyoto/A2601/A260101/26024913/', meta: 'Gyukatsu direkt an Kyoto Station', tag: 'STATION' },
+      { num: 13, title: 'VOG Kyoto', lat: 35.0046281, lng: 135.7683879, link: 'https://vog-kyoto.com/', meta: 'Rein vegetarisch/vegan/glutenfrei/Jain · indische Küche, 4,9★<br>✅ Vegetarisch: komplett vegetarisches Restaurant', tag: 'PONTOCHO' },
+      { num: 14, title: 'Gion Loka', lat: 35.0015905, lng: 135.7784572, link: 'https://sowaka.com/eng/restaurant/', meta: 'Kaiseki, gehoben · unbedingt vorab reservieren<br>✅ Vegetarisch: Küche geht auf Bedürfnisse ein (vorab angeben)', tag: 'GION' },
+      { num: 15, title: 'Nishiki Market', lat: 35.0050258, lng: 135.764723, link: 'https://www.kyoto-nishiki.or.jp/en/', meta: 'Streetfood-Markt zum Durchprobieren<br>✅ Vegetarisch: bei 100+ Ständen reichlich Auswahl', tag: 'MARKT' },
+      { num: 16, title: 'Nishiki Market Alley – Moon and Back', lat: 35.0051762, lng: 135.7622938, link: 'https://www.moonandbackkyoto.com/', meta: 'Ramen, auch vegan/glutenfrei/halal<br>✅ Vegetarisch: explizit vegane/vegetarische Ramen', tag: 'MARKT' },
     ]
   },
 
@@ -596,12 +668,9 @@ const CITIES = {
       ]},
     ],
     food: [
-      { num: 7, title: 'Takoyaki Wanaka', lat: 34.6687742, lng: 135.5027298, link: 'http://takoyaki-wanaka.com/en/', meta: 'Takoyaki-Klassiker mitten in Dotonbori', tag: 'TAKOYAKI' },
-      { num: 8, title: 'Takoyaki Juhachiban', lat: 34.66867, lng: 135.5021964, link: 'https://tabelog.com/en/osaka/A2701/A270202/27053018/', meta: 'Extra knusprig, cremig innen', tag: 'TAKOYAKI' },
-      { num: 9, title: 'OKO – Fun Okonomiyaki Bar', lat: 34.6687807, lng: 135.4981548, link: 'https://www.tripadvisor.com/Restaurant_Review-g298566-d27364248-Reviews-Oko_Fun_Okonomiyaki_Bar-Osaka_Osaka_Prefecture_Kinki.html', meta: 'Auch vegan/glutenfrei', tag: 'OKONOMIYAKI' },
-      { num: 10, title: 'Ajinoya Okonomiyaki', lat: 34.668065, lng: 135.500976, link: 'https://ajinoya-okonomiyaki.com/en/', meta: 'Berühmt · oft lange Warteschlange', tag: 'OKONOMIYAKI' },
-      { num: 11, title: 'Ichiran Ramen', lat: 34.6684219, lng: 135.5032242, link: 'https://tabelog.com/en/osaka/A2701/A270202/27084189/', meta: '24h geöffnet, Tischplätze für Gruppen', tag: 'RAMEN' },
-      { num: 12, title: 'Kani Doraku (Hauptfiliale)', lat: 34.6687993, lng: 135.5014873, link: 'https://tabelog.com/en/osaka/A2701/A270202/27001451/', meta: 'Krabben-Institution mit riesiger Leuchtreklame', tag: 'KRABBE' },
+      { num: 7, title: 'OKO Takoyaki', lat: 34.672553, lng: 135.5033819, link: 'https://oko-osaka.wixsite.com/okotako', meta: '100% vegan & glutenfrei · Takoyaki aus Okara statt Octopus<br>✅ Vegetarisch: komplett vegan/vegetarisch', tag: 'TAKOYAKI' },
+      { num: 8, title: 'OKO – Fun Okonomiyaki Bar', lat: 34.6687807, lng: 135.4981548, link: 'https://www.tripadvisor.com/Restaurant_Review-g298566-d27364248-Reviews-Oko_Fun_Okonomiyaki_Bar-Osaka_Osaka_Prefecture_Kinki.html', meta: 'Auch vegan/glutenfrei<br>✅ Vegetarisch: explizit vegane/vegetarische Okonomiyaki', tag: 'OKONOMIYAKI' },
+      { num: 9, title: 'Ichiran Ramen', lat: 34.6684219, lng: 135.5032242, link: 'https://tabelog.com/en/osaka/A2701/A270202/27084189/', meta: '24h geöffnet, Tischplätze für Gruppen<br>✅ Vegetarisch: bietet mittlerweile tonkotsu-freien/vegetarischen Ramen an', tag: 'RAMEN' },
     ]
   },
 
@@ -972,10 +1041,97 @@ function buildTravelPanel() {
   initUploadWidgets('reisepaesse');
 }
 
+/* ============ WÄHRUNGSRECHNER ============ */
+let currentRate = 184.6; // Fallback-Kurs (1 EUR = X JPY), wird beim Laden aktualisiert
+let rateTimestamp = null;
+
+function buildCurrencyPanel() {
+  const panel = document.createElement('div');
+  panel.className = 'city-panel';
+  panel.id = 'panel-waehrung';
+
+  panel.innerHTML = `
+    <div class="city-header">
+      <span class="emoji">💱</span>
+      <h2>Yen ↔ Euro Rechner</h2>
+      <p>Live-Wechselkurs für schnelle Umrechnung</p>
+    </div>
+
+    <div class="section">
+      <div class="currency-box">
+        <div class="currency-field">
+          <label>Japanische Yen</label>
+          <div class="currency-input-wrap">
+            <span class="flag">🇯🇵</span>
+            <input type="number" id="yen-input" placeholder="0" inputmode="decimal" oninput="convertFromYen(this.value)">
+          </div>
+        </div>
+
+        <div class="currency-swap">⇅</div>
+
+        <div class="currency-field">
+          <label>Euro</label>
+          <div class="currency-input-wrap">
+            <span class="flag">🇪🇺</span>
+            <input type="number" id="eur-input" placeholder="0" inputmode="decimal" oninput="convertFromEur(this.value)">
+          </div>
+        </div>
+
+        <div class="currency-quick">
+          <button onclick="quickYen(1000)">¥1.000</button>
+          <button onclick="quickYen(5000)">¥5.000</button>
+          <button onclick="quickYen(10000)">¥10.000</button>
+          <button onclick="quickYen(50000)">¥50.000</button>
+        </div>
+
+        <div class="currency-rate-info" id="rate-info">Kurs wird geladen...</div>
+      </div>
+    </div>
+  `;
+
+  content.appendChild(panel);
+  loadExchangeRate();
+}
+
+async function loadExchangeRate() {
+  const infoEl = document.getElementById('rate-info');
+  try {
+    const res = await fetch('https://api.frankfurter.app/latest?from=JPY&to=EUR');
+    const data = await res.json();
+    if (data && data.rates && data.rates.EUR) {
+      currentRate = 1 / data.rates.EUR; // JPY pro EUR
+      rateTimestamp = data.date;
+      if (infoEl) infoEl.textContent = `Kurs: 1 € = ${currentRate.toFixed(2)} ¥ · Stand: ${rateTimestamp}`;
+    }
+  } catch (e) {
+    if (infoEl) infoEl.textContent = `Kurs: 1 € ≈ ${currentRate.toFixed(2)} ¥ (Schätzwert, kein Live-Kurs verfügbar)`;
+  }
+}
+
+function convertFromYen(val) {
+  const yen = parseFloat(val);
+  const eurInput = document.getElementById('eur-input');
+  if (isNaN(yen)) { eurInput.value = ''; return; }
+  eurInput.value = (yen / currentRate).toFixed(2);
+}
+
+function convertFromEur(val) {
+  const eur = parseFloat(val);
+  const yenInput = document.getElementById('yen-input');
+  if (isNaN(eur)) { yenInput.value = ''; return; }
+  yenInput.value = (eur * currentRate).toFixed(0);
+}
+
+function quickYen(amount) {
+  document.getElementById('yen-input').value = amount;
+  convertFromYen(amount);
+}
+
 /* ============ INIT ============ */
 try {
   Object.keys(CITIES).forEach(key => buildPanel(key, CITIES[key]));
   buildTravelPanel();
+  buildCurrencyPanel();
 } catch (e) {
   console.error('Fehler beim Aufbau der Inhalte:', e);
   content.innerHTML = `<div style="padding:20px;color:#C0392B;font-size:13px;">
@@ -988,7 +1144,7 @@ function activateCity(key) {
   document.querySelectorAll('.city-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + key).classList.add('active');
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('active', b.dataset.city === key));
-  if (key !== 'reise') setTimeout(() => initMap(key), 50);
+  if (key !== 'reise' && key !== 'waehrung') setTimeout(() => initMap(key), 50);
 }
 
 document.querySelectorAll('#tabs button').forEach(btn => {
