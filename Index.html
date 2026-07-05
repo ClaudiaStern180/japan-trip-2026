@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1B2A41">
+<title>Japan 2026 · Reise-App</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+  :root {
+    --navy: #1B2A41;
+    --navy-light: #263B57;
+    --gold: #C8973A;
+    --cream: #F7F3EA;
+    --paper: #FFFFFF;
+    --ink: #22201C;
+    --muted: #8B8375;
+    --line: rgba(27,42,65,0.12);
+
+    --hotel: #C0392B;
+    --food: #8B3A62;
+    --day-a: #B8860B;
+    --day-b: #2E5C8A;
+    --day-c: #3C7A5B;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  #app { max-width: 720px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* ---- Top bar ---- */
+  #topbar {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 16px 18px 0;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  #topbar .brand {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  #topbar .brand h1 {
+    font-size: 17px;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+  #topbar .brand .sub {
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+  #tabs {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  #tabs::-webkit-scrollbar { display: none; }
+  #tabs button {
+    flex: 0 0 auto;
+    background: transparent;
+    border: none;
+    color: rgba(247,243,234,0.55);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 10px 12px;
+    position: relative;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  #tabs button.active { color: var(--cream); }
+  #tabs button.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 10%; right: 10%;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 2px 2px 0 0;
+  }
+
+  /* ---- City header ---- */
+  .city-header {
+    padding: 16px 18px 12px;
+  }
+  .city-header .emoji { font-size: 26px; }
+  .city-header h2 {
+    margin: 6px 0 2px;
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--navy);
+  }
+  .city-header p {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  /* ---- Map ---- */
+  .map-wrap { position: relative; margin: 0 18px 4px; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 10px rgba(27,42,65,0.15); }
+  .leaflet-map { width: 100%; height: 340px; background: #e8e4d8; }
+  .map-legend {
+    position: absolute; z-index: 500; top: 8px; right: 8px;
+    background: rgba(255,255,255,0.94);
+    border-radius: 8px; padding: 7px 9px; font-size: 10px; line-height: 1.35;
+    max-width: 150px; box-shadow: 0 1px 6px rgba(0,0,0,0.25);
+  }
+  .map-legend .li { display: flex; align-items: center; gap: 5px; padding: 1px 0; }
+  .map-legend .n {
+    width: 13px; height: 13px; border-radius: 50%; color: white;
+    font-size: 8.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .map-legend .div { height: 1px; background: rgba(0,0,0,0.12); margin: 4px 0; }
+  .map-note {
+    padding: 6px 18px 14px; font-size: 11px; color: var(--muted); text-align: center;
+  }
+
+  /* ---- Sections ---- */
+  .section { margin: 6px 18px 18px; }
+  .section-title {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--navy); font-weight: 700; margin: 0 0 10px; display: flex; align-items: center; gap: 6px;
+  }
+  .section-title .count {
+    background: var(--line); color: var(--navy); border-radius: 20px;
+    font-size: 10.5px; padding: 1px 8px; font-weight: 700;
+  }
+
+  .card {
+    background: var(--paper);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(27,42,65,0.08);
+    border: 1px solid var(--line);
+    display: flex;
+    gap: 11px;
+    align-items: flex-start;
+  }
+  .card .num {
+    flex-shrink: 0;
+    width: 24px; height: 24px; border-radius: 50%;
+    color: white; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .card .body { flex: 1; min-width: 0; }
+  .card .title { font-size: 14.5px; font-weight: 700; color: var(--ink); margin: 0 0 2px; }
+  .card .meta { font-size: 12px; color: var(--muted); line-height: 1.45; }
+  .card .meta b { color: var(--navy); }
+  .card .tag {
+    display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+    padding: 2px 7px; border-radius: 20px; margin-top: 5px; color: white;
+  }
+
+  .day-divider {
+    font-size: 11.5px; font-weight: 700; color: var(--navy);
+    margin: 14px 0 8px; padding-bottom: 5px; border-bottom: 2px solid var(--line);
+  }
+
+  /* ---- Tickets stub ---- */
+  .tickets-empty {
+    border: 1.5px dashed var(--line);
+    border-radius: 12px;
+    padding: 22px 16px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+  .tickets-empty .icon { font-size: 26px; margin-bottom: 6px; }
+
+  .upload-box {
+    border: 1.5px dashed var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    background: var(--paper);
+  }
+  .upload-box input[type="file"] { display: none; }
+  .upload-btn {
+    display: inline-block;
+    background: var(--navy);
+    color: var(--cream);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 4px;
+  }
+  .upload-btn.uploading { opacity: 0.6; pointer-events: none; }
+  .upload-hint { font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+  .file-card {
+    background: var(--paper);
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 7px;
+    box-shadow: 0 1px 3px rgba(27,42,65,0.08);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .file-card .ficon { font-size: 20px; flex-shrink: 0; }
+  .file-card .finfo { flex: 1; min-width: 0; }
+  .file-card .fname { font-size: 13px; font-weight: 600; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .file-card .fmeta { font-size: 10.5px; color: var(--muted); }
+  .file-card a.fdownload {
+    flex-shrink: 0; font-size: 11px; font-weight: 700; color: var(--navy);
+    text-decoration: none; padding: 5px 10px; border-radius: 20px; background: var(--line);
+  }
+  .file-card .fdelete {
+    flex-shrink: 0; background: none; border: none; color: var(--hotel);
+    font-size: 16px; cursor: pointer; padding: 4px;
+  }
+
+  footer {
+    text-align: center; padding: 18px; font-size: 10.5px; color: var(--muted);
+  }
+
+  .city-panel { display: none; }
+  .city-panel.active { display: block; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div id="topbar">
+    <div class="brand">
+      <h1>Japan 2026 ✈️</h1>
+      <span class="sub">5 Reisende</span>
+    </div>
+    <div id="tabs">
+      <button data-city="tokio" class="active">🗾 Tokio</button>
+      <button data-city="kyoto">⛩️ Kyoto</button>
+      <button data-city="osaka">🐙 Osaka</button>
+      <button data-city="okinawa">🏝️ Okinawa</button>
+      <button data-city="reise">✈️ An-/Abreise</button>
+    </div>
+  </div>
+
+  <div id="content"></div>
+
+  <footer>Für alle 5 Reisenden · zuletzt aktualisiert Juli 2026</footer>
+</div>
+
+<script>
+/* ============ SUPABASE KONFIGURATION ============ */
+/* Bitte hier eure Zugangsdaten aus dem Supabase-Projekt eintragen: */
+const SUPABASE_URL = 'https://ptenjpaemqmbnotqnvgn.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_n4Hhm2qXrBHYWuBQ86ViSA_-yIHQdE7';
+const BUCKET = 'trip-files';
+
+let sbClient = null;
+try {
+  if (SUPABASE_URL.startsWith('http') && SUPABASE_ANON_KEY.length > 20 && window.supabase) {
+    sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+} catch (e) {
+  console.error('Supabase konnte nicht initialisiert werden:', e);
+  sbClient = null;
+}
+
+/* ============ DATEN ============ */
+const CITIES = {
+  tokio: {
+    label: 'Tokio Trip',
+    dates: '13.–17.08.2026',
+    emoji: '🗾',
+    center: [35.685, 139.745],
+    zoom: 12,
+    stations: [
+      { name: 'Ryogoku Station (JR Sobu/Toei Oedo)', lat: 35.6959325, lng: 139.7928696 },
+    ],
+    hotels: [
+      { num: 1, title: 'Sumo Hotel Ryogoku', lat: 35.6907391, lng: 139.7910614,
+        meta: '🚇 Ryogoku Station (JR Sobu-Linie / Toei Oedo-Linie), 2–3 Min.<br>Ryogoku, Sumo-Viertel<br><b>13.–17.08.2026</b> · Check-in ab 16:00 Uhr (Self-Check-in am Tablet im EG)<br>Buchungsnr. 5352711039' },
+    ],
+    dayGroups: [
+      { label: 'Asakusa & Akihabara', color: 'var(--day-a)', items: [
+        { num: 2, title: 'Senso-ji & Nakamise-dori', lat: 35.7147651, lng: 139.7966553, meta: 'Tempel + Streetfood, abends stimmungsvoller' },
+        { num: 3, title: 'Akihabara', lat: 35.6996473, lng: 139.7713703, meta: 'Elektronik & Pop-Kultur → abends Karaoke' },
+      ]},
+      { label: 'Harajuku & Shibuya', color: 'var(--day-b)', items: [
+        { num: 4, title: 'Takeshita-dori', lat: 35.6710335, lng: 139.7051821, meta: 'Shopping, Crepes & Snacks' },
+        { num: 5, title: 'Meiji-Schrein & Gärten', lat: 35.6763976, lng: 139.6993259, meta: 'Am besten früh morgens' },
+        { num: 6, title: 'Shibuya Crossing & Hachiko', lat: 35.659482, lng: 139.7005596, meta: 'Ikonische Kreuzung' },
+        { num: 7, title: 'Shibuya Sky', lat: 35.6586719, lng: 139.7019848, meta: 'Sunset-Slot vorab buchen!' },
+      ]},
+      { label: 'teamLab', color: 'var(--day-c)', items: [
+        { num: 8, title: 'teamLab Planets TOKYO', lat: 35.6491207, lng: 139.7897739, meta: 'Barfuß-Erlebnis · danach Sushi-Kurs in der Nähe' },
+      ]},
+    ],
+    food: [
+      { num: 9, title: 'SUMOLAND Tokyo Ryogoku', lat: 35.6946727, lng: 139.7952531, meta: 'Sumo-Show + Chanko Nabe · sehr beliebt, vorab buchen', tag: 'CHANKO' },
+      { num: 10, title: 'Chanko Kirishima', lat: 35.695655, lng: 139.7916042, meta: 'Klassisches Chanko-Nabe · gut für Gruppen', tag: 'CHANKO' },
+      { num: 11, title: 'Sumo Chaya Terao', lat: 35.6945185, lng: 139.791678, meta: 'Traditionell, günstiges Lunch-Set (~1000¥)', tag: 'CHANKO' },
+      { num: 12, title: 'Gottsuan Sakaba', lat: 35.6927351, lng: 139.7945242, meta: 'Familiär, Wirt ist ehem. Sumo-Ringer', tag: 'CHANKO' },
+      { num: 13, title: "Beck's Coffee Shop", lat: 35.6958669, lng: 139.7922972, meta: 'Warme Frühstücksgerichte, direkt am Bahnhof · ab 7 Uhr', tag: 'FRÜHSTÜCK' },
+      { num: 14, title: 'Oasis Ryogoku', lat: 35.6908884, lng: 139.7919627, meta: 'Gemütliches Bagel-Café', tag: 'FRÜHSTÜCK' },
+      { num: 15, title: 'Saint Marc Café', lat: 35.6954732, lng: 139.7921092, meta: 'Sandwiches & Gebäck · ab 7 Uhr', tag: 'FRÜHSTÜCK' },
+    ]
+  },
+
+  kyoto: {
+    label: 'Kyoto Trip',
+    dates: '17.–20.08.2026',
+    emoji: '⛩️',
+    center: [35.0, 135.74],
+    zoom: 12,
+    stations: [
+      { name: 'Kyoto Station (Hachijo-Ausgang)', lat: 34.9839239, lng: 135.7590942 },
+      { name: 'Shijo Station', lat: 35.0024081, lng: 135.7597178 },
+      { name: 'Sanjo Station', lat: 35.0094432, lng: 135.7723025 },
+      { name: 'Umekoji-Kyotonishi Station', lat: 34.9888864, lng: 135.7430949 },
+    ],
+    hotels: [
+      { num: 2, title: 'Hotel Keihan Kyoto Hachijoguchi', lat: 34.9808778, lng: 135.7612905, meta: '🚇 Kyoto Station (Hachijo-Ausgang), 1 Min.' },
+      { num: 3, title: 'IMU Hotel Kyoto', lat: 35.0012252, lng: 135.7568286, meta: '🚇 Shijo (Karasuma-Linie) / Karasuma (Hankyu), 4–5 Min.' },
+      { num: 4, title: 'TSUGU Kyoto Sanjo', lat: 35.0088047, lng: 135.7637609, meta: '🚇 Sanjo Station (Keihan/Tozai-Linie), direkt · nah Nishiki Market' },
+      { num: 5, title: 'Resi Stay Sun Chlorella', lat: 34.9886533, lng: 135.7494918, meta: '🚇 Umekoji-Kyotonishi (JR), 8 Min. · Kyoto Station 20 Min. zu Fuß' },
+      { num: 6, title: 'The Royal Park Hotel Kyoto Umekoji', lat: 34.9881734, lng: 135.7443239, meta: '🚇 Umekoji-Kyotonishi (JR), 1 Min. · ruhig, familienfreundlich' },
+    ],
+    dayGroups: [
+      { label: 'Tag 5 · 18.08. Mo · Fushimi & Gion', color: 'var(--day-a)', items: [
+        { num: 7, title: 'Fushimi Inari-Taisha', lat: 34.9676945, lng: 135.7791876, meta: '10.000 Torii-Tore · am besten sehr früh (5–6 Uhr)' },
+        { num: 8, title: 'Gion-Viertel', lat: 35.0037816, lng: 135.777245, meta: 'Geisha-Viertel · Maiko-Chance am Abend' },
+        { num: 9, title: 'Pontocho', lat: 35.0064277, lng: 135.7712162, meta: 'Stimmungsvolle Gasse am Fluss · Abendessen' },
+      ]},
+      { label: 'Tag 6 · 19.08. Di · Arashiyama & Kita', color: 'var(--day-b)', items: [
+        { num: 10, title: 'Arashiyama Bambuswald', lat: 35.0168187, lng: 135.6713013, meta: 'Sehr früh starten – wird schnell voll!' },
+        { num: 11, title: 'Affentempel Iwatayama', lat: 35.011395, lng: 135.6766245, meta: '20–30 Min. Aufstieg, tolle Aussicht' },
+        { num: 12, title: 'Kinkaku-ji', lat: 35.03937, lng: 135.7292431, meta: 'Goldener Pavillon mit Teichspiegelung' },
+        { num: 13, title: 'Nijo-jo Schloss', lat: 35.0140379, lng: 135.7484258, meta: 'Nachtigallenboden, Ninomaru-Palast' },
+      ]},
+      { label: 'Tag 7 · 20.08. Mi · Higashiyama', color: 'var(--day-c)', items: [
+        { num: 14, title: 'Sannenzaka & Ninenzaka', lat: 34.9981744, lng: 135.7808578, meta: 'Steintreppen-Gassen · Teezeremonie vorab buchen' },
+        { num: 15, title: 'Kiyomizudera', lat: 34.9946662, lng: 135.784661, meta: 'Panoramablick über Kyoto' },
+        { num: 16, title: 'Maruyama Park', lat: 35.0035587, lng: 135.7805269, meta: 'Kyotos ältester Park, direkt neben Gion' },
+      ]},
+    ],
+    food: [
+      { num: 17, title: 'Katsugyu Pontocho', lat: 35.0070151, lng: 135.7710372, meta: 'Gyukatsu · beliebt, gut für Gruppen', tag: 'PONTOCHO' },
+      { num: 18, title: 'Gion Loka', lat: 35.0015905, lng: 135.7784572, meta: 'Kaiseki, gehoben · unbedingt vorab reservieren', tag: 'GION' },
+      { num: 19, title: 'Nishiki Market', lat: 35.0050258, lng: 135.764723, meta: 'Streetfood-Markt zum Durchprobieren', tag: 'MARKT' },
+      { num: 20, title: 'Nishiki Market Alley – Moon and Back', lat: 35.0051762, lng: 135.7622938, meta: 'Ramen, auch vegan/glutenfrei/halal', tag: 'MARKT' },
+      { num: 21, title: 'Katsugyu Kyoto Ekimae', lat: 34.9893363, lng: 135.7606275, meta: 'Gyukatsu direkt an Kyoto Station', tag: 'STATION' },
+    ]
+  },
+
+  osaka: {
+    label: 'Osaka Trip',
+    dates: '20.–22.08.2026',
+    emoji: '🐙',
+    center: [34.678, 135.505],
+    zoom: 13,
+    stations: [
+      { name: 'JR Namba Station', lat: 34.6660463, lng: 135.4952492 },
+      { name: 'Namba Station', lat: 34.6670979, lng: 135.5003424 },
+      { name: 'Shinsaibashi Station', lat: 34.6750572, lng: 135.5003772 },
+      { name: 'Nipponbashi Station', lat: 34.6669677, lng: 135.5061197 },
+    ],
+    hotels: [
+      { num: 1, title: 'APA Hotel & Resort Namba Ekimae Tower', lat: 34.6660794, lng: 135.495971, meta: '🚇 JR Namba Station, 1 Min. · Onsen, viele Familienzimmer' },
+      { num: 2, title: 'KOKO Hotel Namba Sennichimae', lat: 34.6673828, lng: 135.5053386, meta: '🚇 Namba Station, 3–5 Min. · Familienzimmer' },
+      { num: 3, title: 'Masters Residence Dotonbori', lat: 34.6694837, lng: 135.5086538, meta: '🚇 Shinsaibashi Station, 5–7 Min. · Apartment mit Küche' },
+      { num: 4, title: 'Nihonbashi Royal', lat: 34.6652002, lng: 135.5072044, meta: '🚇 Nipponbashi Station, 3–4 Min. · für 5 Pers. geeignet' },
+    ],
+    dayGroups: [
+      { label: 'Tag 8 · 20.08. Do · Namba & Dotonbori', color: 'var(--day-a)', items: [
+        { num: 5, title: 'Namba Yasaka-Schrein', lat: 34.6615592, lng: 135.4967039, meta: 'Berühmtes Löwenkopf-Tor · kurzer Stopp' },
+        { num: 6, title: 'Shinsaibashi', lat: 34.6724248, lng: 135.5010362, meta: 'Große Einkaufsstraße · Shopping' },
+        { num: 7, title: 'Dotonbori', lat: 34.6686471, lng: 135.5030983, meta: 'Neonlichter, Streetfood · abends am schönsten' },
+      ]},
+      { label: 'Tag 9 · 21.08. Fr · Osaka Castle', color: 'var(--day-b)', items: [
+        { num: 8, title: 'Osaka Castle', lat: 34.6872571, lng: 135.5258546, meta: 'Museum & Aussichtsplattform · Tickets vorab online' },
+      ]},
+    ],
+    food: [
+      { num: 9, title: 'Takoyaki Wanaka', lat: 34.6687742, lng: 135.5027298, meta: 'Takoyaki-Klassiker mitten in Dotonbori', tag: 'TAKOYAKI' },
+      { num: 10, title: 'Takoyaki Juhachiban', lat: 34.66867, lng: 135.5021964, meta: 'Extra knusprig, cremig innen', tag: 'TAKOYAKI' },
+      { num: 11, title: 'OKO – Fun Okonomiyaki Bar', lat: 34.6687807, lng: 135.4981548, meta: 'Auch vegan/glutenfrei', tag: 'OKONOMIYAKI' },
+      { num: 12, title: 'Ajinoya Okonomiyaki', lat: 34.668065, lng: 135.500976, meta: 'Berühmt · oft lange Warteschlange', tag: 'OKONOMIYAKI' },
+      { num: 13, title: 'Ichiran Ramen', lat: 34.6684219, lng: 135.5032242, meta: '24h geöffnet, Tischplätze für Gruppen', tag: 'RAMEN' },
+      { num: 14, title: 'Kani Doraku (Hauptfiliale)', lat: 34.6687993, lng: 135.5014873, meta: 'Krabben-Institution mit riesiger Leuchtreklame', tag: 'KRABBE' },
+    ]
+  },
+
+  okinawa: {
+    label: 'Okinawa Trip',
+    dates: '22.–26.08.2026',
+    emoji: '🏝️',
+    center: [26.45, 127.85],
+    zoom: 9,
+    hotels: [
+      { num: 1, title: 'Laguna Garden Hotel', lat: 26.280555, lng: 127.7382757, meta: 'Ginowan · <b>22.–26.08.2026</b><br>Check-in ab 14:00 Uhr · Check-out bis 11:00 Uhr · Superior-Zweibettzimmer mit Meerblick, Frühstück inkl.<br>Buchungsnr. 9020730209956 · PIN 197365 · Reservierungsnr. 2481282920<br>(1 von 2 Buchungen für die Gruppe – zweite Bestätigung separat)' },
+    ],
+    dayGroups: [
+      { label: 'Tag 10 · 22.08. Sa · Ankunft & Araha Beach', color: 'var(--day-a)', items: [
+        { num: 2, title: 'Araha Beach', lat: 26.3041875, lng: 127.7585625, meta: 'Erstes Schnorcheln · familienfreundlich, Kinderspielplatz' },
+        { num: 3, title: 'Kokusai-dori (Naha)', lat: 26.2151469, lng: 127.684745, meta: 'Okinawa Soba & lokale Küche zum Ankommen' },
+      ]},
+      { label: 'Tag 11 · 23.08. So · Kerama-Inseln', color: 'var(--day-b)', items: [
+        { num: 4, title: 'Tomari Fährterminal (Kerama-Inseln)', lat: 26.2236035, lng: 127.6837669, meta: 'Fähre nach Zamami/Tokashiki · Schildkröten-Schnorcheln vorab buchen' },
+        { num: 5, title: 'Cape Manzamo', lat: 26.5052353, lng: 127.8504781, meta: 'Sonnenuntergang · berühmte Elefanten-Klippe' },
+        { num: 6, title: 'Blue Cave Schnorcheln (Bokenjima)', lat: 26.4425977, lng: 127.7734662, meta: '14:30 Uhr · Bootstour zur Blauen Grotte, Onna<br>Buchungsnr. BR-1408873863 · So. 23.08.2026<br>Mitbringen: Badesachen, Handtuch, Wechselkleidung, Sandalen' },
+      ]},
+      { label: 'Tag 12 · 24.08. Mo · Churaumi & Emerald Beach', color: 'var(--day-c)', items: [
+        { num: 7, title: 'Okinawa Churaumi Aquarium', lat: 26.694338, lng: 127.8780131, meta: 'Walhaie & Mantas im riesigen Kuroshio-Becken' },
+        { num: 8, title: 'Emerald Beach', lat: 26.6991832, lng: 127.8775903, meta: 'Baden & Entspannen direkt neben dem Aquarium' },
+      ]},
+    ],
+    food: [
+      { num: 9, title: 'Kokusai-dori Restaurants', lat: 26.2151469, lng: 127.684745, meta: 'Okinawa-Abschiedsessen & letzte Souvenirs', tag: 'NAHA' },
+    ]
+  }
+};
+
+const TRAVEL = {
+  label: 'An- & Abreise',
+  dates: '13.08. – 27.08.2026',
+  emoji: '✈️',
+  flights: [
+    { num: 1, title: 'Ankunft Tokio (Haneda)', date: '13.08. Mi', meta: 'Landung ca. 22:20 Uhr · Suica kaufen<br><b>Transfer gebucht:</b> Abholung 23:00 Uhr, Booking.com Rides, Großraumwagen (max. 5 Pers.)<br>Buchungsnr. 505910979 · Ride-ID 397934291 · 56,64 € · kostenfreie Stornierung bis 12.08. 23:00 Uhr (JP-Zeit)' },
+    { num: 2, title: 'Flug Osaka → Okinawa', date: '22.08. Sa', meta: '<b>MM219</b> · Abflug 11:45 Uhr<br>Buchungscode: FP5DXF (alle 5 Reisenden)' },
+    { num: 3, title: 'Flug Okinawa → Tokio', date: '26.08. Mi', meta: '<b>MM504</b> · Abflug 12:05 Uhr<br>Buchungscode: 6U69GT (alle 5 Reisenden)<br>Danach Transfer & Shopping in Shinjuku' },
+    { num: 4, title: 'Abflug Tokio (Narita)', date: '27.08. Do', meta: 'Abflug 22:30 Uhr · Freier Vormittag für letzte Souvenirs davor' },
+  ]
+};
+
+const COLOR_HOTEL = '#C0392B';
+const COLOR_FOOD = '#8B3A62';
+
+/* ============ RENDER ============ */
+const content = document.getElementById('content');
+const maps = {}; // leaflet instances cache
+
+function tagColor(tag) {
+  const map = { CHANKO: '#8B3A62', FRÜHSTÜCK: '#B8860B', PONTOCHO: '#8B3A62', GION: '#8B3A62',
+                MARKT: '#8B3A62', STATION: '#8B3A62', TAKOYAKI: '#8B3A62', OKONOMIYAKI: '#8B3A62',
+                RAMEN: '#8B3A62', KRABBE: '#8B3A62' };
+  return map[tag] || '#8B3A62';
+}
+
+function buildPanel(cityKey, city) {
+  const panel = document.createElement('div');
+  panel.className = 'city-panel';
+  panel.id = 'panel-' + cityKey;
+
+  const allDayItems = city.dayGroups.flatMap(g => g.items.map(i => ({...i, color: g.color})));
+  const allHotelItems = city.hotels.map(h => ({...h, color: COLOR_HOTEL}));
+  const allFoodItems = city.food.map(f => ({...f, color: COLOR_FOOD}));
+  const allPoints = [...allHotelItems, ...allDayItems, ...allFoodItems];
+
+  const legendRows = allPoints.map(p => {
+    const c = p.color.startsWith('var') ? getComputedColor(p.color) : p.color;
+    return `<div class="li"><span class="n" style="background:${c}">${p.num}</span>${p.title}</div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div class="city-header">
+      <span class="emoji">${city.emoji}</span>
+      <h2>${city.label} · ${city.dates}</h2>
+      <p>Hotels, Sehenswürdigkeiten & Restaurants auf einen Blick</p>
+    </div>
+    <div class="map-wrap">
+      <div class="leaflet-map" id="map-${cityKey}"></div>
+      <div class="map-legend">${legendRows}</div>
+    </div>
+    <div class="map-note">Antippen für Details · Karte lädt über echte Server-Verbindung</div>
+
+    <div class="section">
+      <div class="section-title">🏨 Hotels <span class="count">${city.hotels.length}</span></div>
+      ${city.hotels.map(h => cardHTML(h, COLOR_HOTEL)).join('')}
+    </div>
+
+    <div class="section">
+      <div class="section-title">📍 Sehenswürdigkeiten <span class="count">${allDayItems.length}</span></div>
+      ${city.dayGroups.map(g => `
+        <div class="day-divider">${g.label}</div>
+        ${g.items.map(i => cardHTML(i, getComputedColor(g.color))).join('')}
+      `).join('')}
+    </div>
+
+    <div class="section">
+      <div class="section-title">🍽️ Restaurants <span class="count">${city.food.length}</span></div>
+      ${city.food.map(f => cardHTML(f, COLOR_FOOD, true)).join('')}
+    </div>
+
+    <div class="section">
+      <div class="section-title">🎫 Tickets & Dokumente</div>
+      ${uploadWidgetHTML(cityKey, 'Dokument')}
+    </div>
+  `;
+
+  content.appendChild(panel);
+
+  // store point data for map init
+  panel._points = allPoints;
+  panel._city = city;
+  initUploadWidgets(cityKey);
+}
+
+function getComputedColor(cssVar) {
+  if (!cssVar.startsWith('var')) return cssVar;
+  const name = cssVar.match(/--[a-z-]+/)[0];
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+/* ============ UPLOAD-WIDGET ============ */
+function uploadWidgetHTML(category, label) {
+  if (!sbClient) {
+    return `
+      <div class="tickets-empty">
+        <div class="icon">⚙️</div>
+        Upload noch nicht aktiv – Supabase-Zugangsdaten fehlen im Code
+      </div>`;
+  }
+  return `
+    <div class="upload-box" id="upload-${category}">
+      <label class="upload-btn" id="btn-${category}" data-label="📎 ${label} hochladen">
+        📎 ${label} hochladen
+        <input type="file" id="input-${category}" onchange="handleUpload('${category}', this)" />
+      </label>
+      <div class="upload-hint">PDF, JPG oder PNG · für alle 5 Reisenden sichtbar</div>
+    </div>
+    <div id="filelist-${category}" style="margin-top:10px;"></div>
+  `;
+}
+
+async function handleUpload(category, inputEl) {
+  const file = inputEl.files[0];
+  if (!file) return;
+  const btn = document.getElementById('btn-' + category);
+  btn.classList.add('uploading');
+  btn.firstChild.textContent = '⏳ Wird hochgeladen...';
+
+  const path = `${category}/${Date.now()}_${file.name}`;
+  const { error: upErr } = await sbClient.storage.from(BUCKET).upload(path, file);
+  if (upErr) {
+    alert('Fehler beim Hochladen: ' + upErr.message);
+  } else {
+    await sbClient.from('trip_files').insert({
+      category, filename: file.name, storage_path: path, file_size_kb: Math.round(file.size / 1024)
+    });
+    await loadFiles(category);
+  }
+  btn.classList.remove('uploading');
+  btn.firstChild.textContent = btn.dataset.label || '📎 Hochladen';
+  inputEl.value = '';
+}
+
+async function loadFiles(category) {
+  if (!sbClient) return;
+  const listEl = document.getElementById('filelist-' + category);
+  if (!listEl) return;
+  const { data, error } = await sbClient.from('trip_files')
+    .select('*').eq('category', category).order('created_at', { ascending: false });
+  if (error || !data) { listEl.innerHTML = ''; return; }
+
+  listEl.innerHTML = data.map(f => {
+    const { data: urlData } = sbClient.storage.from(BUCKET).getPublicUrl(f.storage_path);
+    const icon = f.filename.toLowerCase().endsWith('.pdf') ? '📄' : '🖼️';
+    return `
+      <div class="file-card">
+        <span class="ficon">${icon}</span>
+        <div class="finfo">
+          <div class="fname">${f.filename}</div>
+          <div class="fmeta">${f.file_size_kb || 0} KB</div>
+        </div>
+        <a class="fdownload" href="${urlData.publicUrl}" target="_blank" rel="noopener">Öffnen</a>
+        <button class="fdelete" onclick="deleteFile('${f.id}', '${f.storage_path}', '${category}')">✕</button>
+      </div>
+    `;
+  }).join('');
+}
+
+async function deleteFile(id, storagePath, category) {
+  if (!confirm('Datei wirklich löschen?')) return;
+  await sbClient.storage.from(BUCKET).remove([storagePath]);
+  await sbClient.from('trip_files').delete().eq('id', id);
+  await loadFiles(category);
+}
+
+function initUploadWidgets(category) {
+  if (sbClient) loadFiles(category);
+}
+
+function cardHTML(item, color, withTag) {
+  return `
+    <div class="card">
+      <span class="num" style="background:${color}">${item.num}</span>
+      <div class="body">
+        <p class="title">${item.title}</p>
+        <p class="meta">${item.meta}</p>
+        ${withTag && item.tag ? `<span class="tag" style="background:${tagColor(item.tag)}">${item.tag}</span>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function initMap(cityKey) {
+  if (maps[cityKey]) { maps[cityKey].invalidateSize(); return; }
+  const city = CITIES[cityKey];
+  const panel = document.getElementById('panel-' + cityKey);
+  const map = L.map('map-' + cityKey, { zoomControl: true }).setView(city.center, city.zoom);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap', maxZoom: 19
+  }).addTo(map);
+
+  const points = panel._points;
+  points.forEach(p => {
+    const color = p.color.startsWith('var') ? getComputedColor(p.color) : p.color;
+    const icon = L.divIcon({
+      className: '',
+      html: `<div style="position:relative;width:24px;height:24px;border-radius:50% 50% 50% 0;background:${color};transform:rotate(-45deg);border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4);"><span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(45deg);font-size:11px;font-weight:700;color:white;">${p.num}</span></div>`,
+      iconSize: [24, 24], iconAnchor: [12, 24], popupAnchor: [0, -24]
+    });
+    L.marker([p.lat, p.lng], { icon }).addTo(map)
+      .bindPopup(`<b>${p.title}</b><br>${p.meta}`);
+  });
+
+  if (points.length) {
+    const bounds = L.latLngBounds(points.map(p => [p.lat, p.lng]));
+    map.fitBounds(bounds, { padding: [30, 30] });
+  }
+
+  // Kleine Symbole für die nächsten Bahnstationen
+  (city.stations || []).forEach(s => {
+    const stationIcon = L.divIcon({
+      className: '',
+      html: `<div style="width:20px;height:20px;border-radius:50%;background:white;border:2px solid #2E5C8A;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 1px 3px rgba(0,0,0,0.35);">🚉</div>`,
+      iconSize: [20, 20], iconAnchor: [10, 10], popupAnchor: [0, -10]
+    });
+    L.marker([s.lat, s.lng], { icon: stationIcon }).addTo(map)
+      .bindPopup(`<b>🚉 ${s.name}</b>`);
+  });
+
+  maps[cityKey] = map;
+}
+
+function buildTravelPanel() {
+  const panel = document.createElement('div');
+  panel.className = 'city-panel';
+  panel.id = 'panel-reise';
+
+  panel.innerHTML = `
+    <div class="city-header">
+      <span class="emoji">${TRAVEL.emoji}</span>
+      <h2>${TRAVEL.label} · ${TRAVEL.dates}</h2>
+      <p>Flüge, Tickets & Reisepässe für alle 5 Reisenden</p>
+    </div>
+
+    <div class="section" style="margin-top:14px;">
+      <div class="section-title">🛫 Flüge & Transfers <span class="count">${TRAVEL.flights.length}</span></div>
+      ${TRAVEL.flights.map(f => `
+        <div class="card">
+          <span class="num" style="background:var(--navy)">${f.num}</span>
+          <div class="body">
+            <p class="title">${f.title}</p>
+            <p class="meta"><b>${f.date}</b> · ${f.meta}</p>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="section">
+      <div class="section-title">🎫 Flugtickets</div>
+      ${uploadWidgetHTML('flugtickets', 'Flugticket')}
+    </div>
+
+    <div class="section">
+      <div class="section-title">🛂 Reisepässe</div>
+      ${uploadWidgetHTML('reisepaesse', 'Reisepass')}
+    </div>
+  `;
+
+  content.appendChild(panel);
+  initUploadWidgets('flugtickets');
+  initUploadWidgets('reisepaesse');
+}
+
+/* ============ INIT ============ */
+try {
+  Object.keys(CITIES).forEach(key => buildPanel(key, CITIES[key]));
+  buildTravelPanel();
+} catch (e) {
+  console.error('Fehler beim Aufbau der Inhalte:', e);
+  content.innerHTML = `<div style="padding:20px;color:#C0392B;font-size:13px;">
+    ⚠️ Fehler beim Laden der Inhalte: ${e.message}<br><br>
+    Bitte Seite neu laden. Falls das Problem bleibt, Screenshot an Claude schicken.
+  </div>`;
+}
+
+function activateCity(key) {
+  document.querySelectorAll('.city-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + key).classList.add('active');
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('active', b.dataset.city === key));
+  if (key !== 'reise') setTimeout(() => initMap(key), 50);
+}
+
+document.querySelectorAll('#tabs button').forEach(btn => {
+  btn.addEventListener('click', () => activateCity(btn.dataset.city));
+});
+
+try {
+  activateCity('tokio');
+} catch (e) {
+  console.error('Fehler beim Aktivieren des Tabs:', e);
+}
+</script>
+</body>
+</html>
