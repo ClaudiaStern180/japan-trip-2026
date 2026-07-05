@@ -166,6 +166,17 @@
     display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
     padding: 2px 7px; border-radius: 20px; margin-top: 5px; color: white;
   }
+  .card .hotel-link {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    text-decoration: none;
+    margin-top: 6px;
+    padding: 4px 10px;
+    background: var(--line);
+    border-radius: 20px;
+  }
 
   .day-divider {
     font-size: 11.5px; font-weight: 700; color: var(--navy);
@@ -182,6 +193,56 @@
     font-size: 12.5px;
   }
   .tickets-empty .icon { font-size: 26px; margin-bottom: 6px; }
+
+  /* ---- Tagesplan ---- */
+  .itinerary-table {
+    background: var(--paper);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(27,42,65,0.08);
+    border: 1px solid var(--line);
+  }
+  .itinerary-row {
+    display: flex;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    gap: 10px;
+  }
+  .itinerary-row:last-child { border-bottom: none; }
+  .itinerary-date {
+    flex-shrink: 0;
+    width: 62px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--navy);
+    padding-top: 1px;
+  }
+  .itinerary-program {
+    font-size: 12.5px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  /* ---- Notizfeld ---- */
+  .notes-box textarea {
+    width: 100%;
+    min-height: 110px;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--paper);
+    resize: vertical;
+  }
+  .notes-box textarea:focus { outline: none; border-color: var(--gold); }
+  .notes-status {
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-top: 6px;
+    height: 14px;
+  }
 
   .upload-box {
     border: 1.5px dashed var(--line);
@@ -406,7 +467,14 @@ const CITIES = {
     ],
     hotels: [
       { num: 1, title: 'Sumo Hotel Ryogoku', lat: 35.6907391, lng: 139.7910614,
+        link: 'https://www.booking.com/hotel/jp/sumo-ryugoku.de.html',
         meta: '🚇 Ryogoku Station (JR Sobu-Linie / Toei Oedo-Linie), 2–3 Min.<br>Ryogoku, Sumo-Viertel<br><b>13.–17.08.2026</b> · Check-in ab 16:00 Uhr (Self-Check-in am Tablet im EG)<br>Buchungsnr. 5352711039' },
+    ],
+    itinerary: [
+      { date: '13.8. Mi', program: 'Ankunft Haneda 22:20 · Nur Transfer & schlafen' },
+      { date: '14.8. Do', program: 'Asakusa & Senso-ji · Streetfood · Akihabara · abends Karaoke' },
+      { date: '15.8. Fr', program: 'Harajuku/Takeshita-dori · Meiji-Schrein & Gärten · Shibuya Crossing & Hachiko · Shibuya Sky zum Sonnenuntergang' },
+      { date: '16.8. Sa', program: 'teamLab Planets (morgens oder abends) · Sushi-Kurs' },
     ],
     dayGroups: [
       { label: 'Asakusa & Akihabara', color: 'var(--day-a)', items: [
@@ -447,11 +515,26 @@ const CITIES = {
       { name: 'Umekoji-Kyotonishi Station', lat: 34.9888864, lng: 135.7430949 },
     ],
     hotels: [
-      { num: 2, title: 'Hotel Keihan Kyoto Hachijoguchi', lat: 34.9808778, lng: 135.7612905, meta: '🚇 Kyoto Station (Hachijo-Ausgang), 1 Min.' },
-      { num: 3, title: 'IMU Hotel Kyoto', lat: 35.0012252, lng: 135.7568286, meta: '🚇 Shijo (Karasuma-Linie) / Karasuma (Hankyu), 4–5 Min.' },
-      { num: 4, title: 'TSUGU Kyoto Sanjo', lat: 35.0088047, lng: 135.7637609, meta: '🚇 Sanjo Station (Keihan/Tozai-Linie), direkt · nah Nishiki Market' },
-      { num: 5, title: 'Resi Stay Sun Chlorella', lat: 34.9886533, lng: 135.7494918, meta: '🚇 Umekoji-Kyotonishi (JR), 8 Min. · Kyoto Station 20 Min. zu Fuß' },
-      { num: 6, title: 'The Royal Park Hotel Kyoto Umekoji', lat: 34.9881734, lng: 135.7443239, meta: '🚇 Umekoji-Kyotonishi (JR), 1 Min. · ruhig, familienfreundlich' },
+      { num: 2, title: 'Hotel Keihan Kyoto Hachijoguchi', lat: 34.9808778, lng: 135.7612905,
+        link: 'https://hotel.check24.de/search/Hotel%20Keihan%20Kyoto%20Hachijoguchi-9876515/2026-08-17/2026-08-20/%5BA%7CA%7C14%7C15%7C16%5D/hotel.html',
+        meta: '🚇 Kyoto Station (Hachijo-Ausgang), 1 Min.' },
+      { num: 3, title: 'IMU Hotel Kyoto', lat: 35.0012252, lng: 135.7568286,
+        link: 'https://www.booking.com/hotel/jp/imu.de.html',
+        meta: '🚇 Shijo (Karasuma-Linie) / Karasuma (Hankyu), 4–5 Min.' },
+      { num: 4, title: 'TSUGU Kyoto Sanjo', lat: 35.0088047, lng: 135.7637609,
+        link: 'https://www.booking.com/hotel/jp/the-share-hotels-tsugujing-du-san-tiao.de.html',
+        meta: '🚇 Sanjo Station (Keihan/Tozai-Linie), direkt · nah Nishiki Market' },
+      { num: 5, title: 'Resi Stay Sun Chlorella', lat: 34.9886533, lng: 135.7494918,
+        link: 'https://www.booking.com/hotel/jp/resi-stay-sun-chlorella.de.html',
+        meta: '🚇 Umekoji-Kyotonishi (JR), 8 Min. · Kyoto Station 20 Min. zu Fuß' },
+      { num: 6, title: 'The Royal Park Hotel Kyoto Umekoji', lat: 34.9881734, lng: 135.7443239,
+        link: 'https://www.booking.com/Share-ftFMf6t',
+        meta: '🚇 Umekoji-Kyotonishi (JR), 1 Min. · ruhig, familienfreundlich' },
+    ],
+    itinerary: [
+      { date: '17.8. Mo', program: 'Shinkansen Tokio → Kyoto · Kimono-Verleih · Sannenzaka · Gion' },
+      { date: '18.8. Di', program: 'Fushimi Inari früh morgens · Teezeremonie · Kiyomizudera/Sannenzaka' },
+      { date: '19.8. Mi', program: 'Arashiyama Bambuswald (sehr früh!) · Optional: Kinkaku-ji' },
     ],
     dayGroups: [
       { label: 'Tag 5 · 18.08. Mo · Fushimi & Gion', color: 'var(--day-a)', items: [
@@ -493,10 +576,22 @@ const CITIES = {
       { name: 'Nipponbashi Station', lat: 34.6669677, lng: 135.5061197 },
     ],
     hotels: [
-      { num: 1, title: 'APA Hotel & Resort Namba Ekimae Tower', lat: 34.6660794, lng: 135.495971, meta: '🚇 JR Namba Station, 1 Min. · Onsen, viele Familienzimmer' },
-      { num: 2, title: 'KOKO Hotel Namba Sennichimae', lat: 34.6673828, lng: 135.5053386, meta: '🚇 Namba Station, 3–5 Min. · Familienzimmer' },
-      { num: 3, title: 'Masters Residence Dotonbori', lat: 34.6694837, lng: 135.5086538, meta: '🚇 Shinsaibashi Station, 5–7 Min. · Apartment mit Küche' },
-      { num: 4, title: 'Nihonbashi Royal', lat: 34.6652002, lng: 135.5072044, meta: '🚇 Nipponbashi Station, 3–4 Min. · für 5 Pers. geeignet' },
+      { num: 1, title: 'APA Hotel & Resort Namba Ekimae Tower', lat: 34.6660794, lng: 135.495971,
+        link: 'https://www.booking.com/hotel/jp/apahoterurizotoda-ban-nanbayi-qian-tawa.de.html',
+        meta: '🚇 JR Namba Station, 1 Min. · Onsen, viele Familienzimmer' },
+      { num: 2, title: 'KOKO Hotel Namba Sennichimae', lat: 34.6673828, lng: 135.5053386,
+        link: 'https://www.booking.com/hotel/jp/koko-osaka-namba-sennichimae.de.html',
+        meta: '🚇 Namba Station, 3–5 Min. · Familienzimmer' },
+      { num: 3, title: 'Masters Residence Dotonbori', lat: 34.6694837, lng: 135.5086538,
+        link: 'https://www.booking.com/hotel/jp/ma-masutazurezidensudao-dun-ku-dao-zhi-nei-xin-zhai-qiao-osaka.de.html',
+        meta: '🚇 Shinsaibashi Station, 5–7 Min. · Apartment mit Küche' },
+      { num: 4, title: 'Nihonbashi Royal', lat: 34.6652002, lng: 135.5072044,
+        link: 'https://www.booking.com/hotel/jp/ri-ben-qiao-roiyaru.de.html',
+        meta: '🚇 Nipponbashi Station, 3–4 Min. · für 5 Pers. geeignet' },
+    ],
+    itinerary: [
+      { date: '20.8. Do', program: 'Kyoto → Osaka · Namba Yasaka-Schrein · Shinsaibashi · abends Dotonbori' },
+      { date: '21.8. Fr', program: 'Osaka Castle · Streetfood: Takoyaki & Okonomiyaki · Freizeit/Shopping' },
     ],
     dayGroups: [
       { label: 'Tag 8 · 20.08. Do · Namba & Dotonbori', color: 'var(--day-a)', items: [
@@ -525,7 +620,15 @@ const CITIES = {
     center: [26.45, 127.85],
     zoom: 9,
     hotels: [
-      { num: 1, title: 'Laguna Garden Hotel', lat: 26.280555, lng: 127.7382757, meta: 'Ginowan · <b>22.–26.08.2026</b><br>Check-in ab 14:00 Uhr · Check-out bis 11:00 Uhr · Superior-Zweibettzimmer mit Meerblick, Frühstück inkl.<br>Buchungsnr. 9020730209956 · PIN 197365 · Reservierungsnr. 2481282920<br>(1 von 2 Buchungen für die Gruppe – zweite Bestätigung separat)' },
+      { num: 1, title: 'Laguna Garden Hotel', lat: 26.280555, lng: 127.7382757,
+        link: 'https://c.24.de/ho/MVZAKY',
+        meta: 'Ginowan · <b>22.–26.08.2026</b><br>Check-in ab 14:00 Uhr · Check-out bis 11:00 Uhr · Superior-Zweibettzimmer mit Meerblick, Frühstück inkl.<br>Buchungsnr. 9020730209956 · PIN 197365 · Reservierungsnr. 2481282920<br>(1 von 2 Buchungen für die Gruppe – zweite Bestätigung separat)' },
+    ],
+    itinerary: [
+      { date: '22.8. Sa', program: 'Flug Osaka → Naha · Ankommen · Strand/Pool' },
+      { date: '23.8. So', program: 'Badetag 1: Kerama/Tokashiki oder Zamami · Schnorcheln' },
+      { date: '24.8. Mo', program: 'Badetag 2: Schildkröten-Schnorcheltour · oder entspannter Strandtag' },
+      { date: '25.8. Di', program: 'Badetag 3: Churaumi Aquarium · Emerald Beach · Abschiedsessen' },
     ],
     dayGroups: [
       { label: 'Tag 10 · 22.08. Sa · Ankunft & Araha Beach', color: 'var(--day-a)', items: [
@@ -595,6 +698,19 @@ function buildPanel(cityKey, city) {
       <h2>${city.label} · ${city.dates}</h2>
       <p>Hotels, Sehenswürdigkeiten & Restaurants auf einen Blick</p>
     </div>
+
+    <div class="section">
+      <div class="section-title">🗓️ Tagesplan-Empfehlung</div>
+      <div class="itinerary-table">
+        ${(city.itinerary || []).map(d => `
+          <div class="itinerary-row">
+            <div class="itinerary-date">${d.date}</div>
+            <div class="itinerary-program">${d.program}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
     <div class="map-wrap">
       <div class="leaflet-map" id="map-${cityKey}"></div>
       <div class="map-legend">${legendRows}</div>
@@ -620,6 +736,14 @@ function buildPanel(cityKey, city) {
     </div>
 
     <div class="section">
+      <div class="section-title">📝 Notizen (für alle 5 sichtbar & bearbeitbar)</div>
+      <div class="notes-box">
+        <textarea id="notes-${cityKey}" placeholder="Hier könnt ihr gemeinsam Notizen, Ideen oder Änderungen festhalten..." onblur="saveNote('${cityKey}', this.value)"></textarea>
+        <div class="notes-status" id="notes-status-${cityKey}"></div>
+      </div>
+    </div>
+
+    <div class="section">
       <div class="section-title">🎫 Tickets & Dokumente</div>
       ${uploadWidgetHTML(cityKey, 'Dokument')}
     </div>
@@ -631,6 +755,7 @@ function buildPanel(cityKey, city) {
   panel._points = allPoints;
   panel._city = city;
   initUploadWidgets(cityKey);
+  loadNote(cityKey);
 }
 
 function getComputedColor(cssVar) {
@@ -721,6 +846,25 @@ function initUploadWidgets(category) {
   if (sbClient) loadFiles(category);
 }
 
+/* ============ NOTIZEN ============ */
+async function loadNote(category) {
+  if (!sbClient) return;
+  const ta = document.getElementById('notes-' + category);
+  if (!ta) return;
+  const { data } = await sbClient.from('trip_notes').select('content').eq('category', category).maybeSingle();
+  if (data) ta.value = data.content || '';
+}
+
+async function saveNote(category, value) {
+  if (!sbClient) return;
+  const statusEl = document.getElementById('notes-status-' + category);
+  if (statusEl) statusEl.textContent = 'Speichern...';
+  const { error } = await sbClient.from('trip_notes')
+    .upsert({ category, content: value, updated_at: new Date().toISOString() }, { onConflict: 'category' });
+  if (statusEl) statusEl.textContent = error ? 'Fehler beim Speichern' : '✓ Gespeichert';
+  setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 2000);
+}
+
 function cardHTML(item, color, withTag) {
   return `
     <div class="card">
@@ -729,6 +873,7 @@ function cardHTML(item, color, withTag) {
         <p class="title">${item.title}</p>
         <p class="meta">${item.meta}</p>
         ${withTag && item.tag ? `<span class="tag" style="background:${tagColor(item.tag)}">${item.tag}</span>` : ''}
+        ${item.link ? `<a href="${item.link}" target="_blank" rel="noopener" class="hotel-link">🔗 Zur Buchung/Hotelseite</a>` : ''}
       </div>
     </div>
   `;
@@ -800,6 +945,14 @@ function buildTravelPanel() {
     </div>
 
     <div class="section">
+      <div class="section-title">📝 Notizen (für alle 5 sichtbar & bearbeitbar)</div>
+      <div class="notes-box">
+        <textarea id="notes-reise" placeholder="Hier könnt ihr gemeinsam Notizen, Ideen oder Änderungen festhalten..." onblur="saveNote('reise', this.value)"></textarea>
+        <div class="notes-status" id="notes-status-reise"></div>
+      </div>
+    </div>
+
+    <div class="section">
       <div class="section-title">🎫 Flugtickets</div>
       ${uploadWidgetHTML('flugtickets', 'Flugticket')}
     </div>
@@ -811,6 +964,7 @@ function buildTravelPanel() {
   `;
 
   content.appendChild(panel);
+  loadNote('reise');
   initUploadWidgets('flugtickets');
   initUploadWidgets('reisepaesse');
 }
