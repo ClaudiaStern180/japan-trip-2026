@@ -318,6 +318,31 @@
     font-family: inherit;
   }
 
+  /* ---- Uhrzeit-Vergleich ---- */
+  .clock-row {
+    display: flex;
+    gap: 12px;
+  }
+  .clock-box {
+    flex: 1;
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 18px 12px;
+    text-align: center;
+    color: var(--cream);
+    box-shadow: 0 1px 3px rgba(27,42,65,0.15);
+  }
+  .clock-box .clock-flag { font-size: 22px; margin-bottom: 4px; }
+  .clock-box .clock-city { font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--gold); font-weight: 700; margin-bottom: 8px; }
+  .clock-box .clock-time { font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 0.5px; }
+  .clock-box .clock-date { font-size: 11px; color: rgba(247,243,234,0.6); margin-top: 6px; }
+  .clock-diff {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
   .upload-box {
     border: 1.5px dashed var(--line);
     border-radius: 12px;
@@ -503,7 +528,7 @@
       <button data-city="osaka">🐙 Osaka</button>
       <button data-city="okinawa">🏝️ Okinawa</button>
       <button data-city="reise">✈️ An-/Abreise</button>
-      <button data-city="waehrung">💱 Yen/€</button>
+      <button data-city="waehrung">💱 Yen/€ & Uhrzeit</button>
     </div>
   </div>
 
@@ -1053,8 +1078,26 @@ function buildCurrencyPanel() {
   panel.innerHTML = `
     <div class="city-header">
       <span class="emoji">💱</span>
-      <h2>Yen ↔ Euro Rechner</h2>
-      <p>Live-Wechselkurs für schnelle Umrechnung</p>
+      <h2>Yen ↔ Euro & Uhrzeit</h2>
+      <p>Live-Wechselkurs & Zeitvergleich Deutschland/Japan</p>
+    </div>
+
+    <div class="section">
+      <div class="clock-row">
+        <div class="clock-box">
+          <div class="clock-flag">🇩🇪</div>
+          <div class="clock-city">Deutschland</div>
+          <div class="clock-time" id="clock-de">--:--:--</div>
+          <div class="clock-date" id="date-de">–</div>
+        </div>
+        <div class="clock-box">
+          <div class="clock-flag">🇯🇵</div>
+          <div class="clock-city">Japan</div>
+          <div class="clock-time" id="clock-jp">--:--:--</div>
+          <div class="clock-date" id="date-jp">–</div>
+        </div>
+      </div>
+      <div class="clock-diff" id="clock-diff"></div>
     </div>
 
     <div class="section">
@@ -1091,6 +1134,46 @@ function buildCurrencyPanel() {
 
   content.appendChild(panel);
   loadExchangeRate();
+  startClocks();
+}
+
+let clockInterval = null;
+function startClocks() {
+  if (clockInterval) clearInterval(clockInterval);
+  updateClocks();
+  clockInterval = setInterval(updateClocks, 1000);
+}
+
+function updateClocks() {
+  const deEl = document.getElementById('clock-de');
+  const jpEl = document.getElementById('clock-jp');
+  if (!deEl || !jpEl) { clearInterval(clockInterval); return; }
+
+  const now = new Date();
+
+  const deTime = new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(now);
+  const deDate = new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', weekday: 'short', day: '2-digit', month: '2-digit' }).format(now);
+  const jpTime = new Intl.DateTimeFormat('de-DE', { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(now);
+  const jpDate = new Intl.DateTimeFormat('de-DE', { timeZone: 'Asia/Tokyo', weekday: 'short', day: '2-digit', month: '2-digit' }).format(now);
+
+  deEl.textContent = deTime;
+  document.getElementById('date-de').textContent = deDate;
+  jpEl.textContent = jpTime;
+  document.getElementById('date-jp').textContent = jpDate;
+
+  // Zeitdifferenz berechnen (Japan ist immer 7-8 Std. voraus je nach Sommerzeit DE)
+  const deOffsetMin = -getTimezoneOffsetMinutes('Europe/Berlin', now);
+  const jpOffsetMin = -getTimezoneOffsetMinutes('Asia/Tokyo', now);
+  const diffHours = (jpOffsetMin - deOffsetMin) / 60;
+  const diffEl = document.getElementById('clock-diff');
+  if (diffEl) diffEl.textContent = `Japan ist ${diffHours} Stunden voraus`;
+}
+
+function getTimezoneOffsetMinutes(timeZone, date) {
+  const dtf = new Intl.DateTimeFormat('en-US', { timeZone, hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const parts = dtf.formatToParts(date).reduce((acc, p) => { acc[p.type] = p.value; return acc; }, {});
+  const asUTC = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour === '24' ? 0 : parts.hour, parts.minute, parts.second);
+  return (asUTC - date.getTime()) / 60000;
 }
 
 async function loadExchangeRate() {
