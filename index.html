@@ -1097,7 +1097,7 @@ function buildCurrencyPanel() {
           <div class="clock-date" id="date-jp">–</div>
         </div>
       </div>
-      <div class="clock-diff" id="clock-diff"></div>
+      <div class="clock-diff">Japan ist 7 Stunden voraus</div>
     </div>
 
     <div class="section">
@@ -1160,13 +1160,6 @@ function updateClocks() {
   document.getElementById('date-de').textContent = deDate;
   jpEl.textContent = jpTime;
   document.getElementById('date-jp').textContent = jpDate;
-
-  // Zeitdifferenz berechnen (Japan ist immer 7-8 Std. voraus je nach Sommerzeit DE)
-  const deOffsetMin = -getTimezoneOffsetMinutes('Europe/Berlin', now);
-  const jpOffsetMin = -getTimezoneOffsetMinutes('Asia/Tokyo', now);
-  const diffHours = (jpOffsetMin - deOffsetMin) / 60;
-  const diffEl = document.getElementById('clock-diff');
-  if (diffEl) diffEl.textContent = `Japan ist ${diffHours} Stunden voraus`;
 }
 
 function getTimezoneOffsetMinutes(timeZone, date) {
