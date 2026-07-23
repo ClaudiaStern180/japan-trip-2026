@@ -343,6 +343,19 @@
     margin-top: 10px;
   }
 
+  /* ---- Phrasen ---- */
+  .phrase-card {
+    background: var(--paper);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(27,42,65,0.08);
+    border: 1px solid var(--line);
+  }
+  .phrase-de { font-size: 14px; font-weight: 700; color: var(--ink); margin: 0 0 4px; }
+  .phrase-jp { font-size: 17px; color: var(--navy); margin: 0 0 2px; }
+  .phrase-romaji { font-size: 12px; color: var(--muted); font-style: italic; }
+
   .upload-box {
     border: 1.5px dashed var(--line);
     border-radius: 12px;
@@ -529,6 +542,7 @@
       <button data-city="okinawa">🏝️ Okinawa</button>
       <button data-city="reise">✈️ An-/Abreise</button>
       <button data-city="waehrung">💱 Yen/€ & Uhrzeit</button>
+      <button data-city="phrasen">🗣️ Phrasen</button>
     </div>
   </div>
 
@@ -674,9 +688,6 @@ const CITIES = {
       { num: 1, title: 'APA Hotel & Resort Namba Ekimae Tower', lat: 34.6660794, lng: 135.495971,
         link: 'https://www.booking.com/hotel/jp/apahoterurizotoda-ban-nanbayi-qian-tawa.de.html',
         meta: '🚇 JR Namba Station, 1 Min. · Onsen, viele Familienzimmer' },
-      { num: 2, title: 'Nihonbashi Royal', lat: 34.6652002, lng: 135.5072044,
-        link: 'https://www.booking.com/hotel/jp/ri-ben-qiao-roiyaru.de.html',
-        meta: '🚇 Nipponbashi Station, 3–4 Min. · für 5 Pers. geeignet' },
     ],
     itinerary: [
       { date: '20.8. Do', program: 'Kyoto → Osaka · Namba Yasaka-Schrein · Shinsaibashi · abends Dotonbori' },
@@ -684,18 +695,18 @@ const CITIES = {
     ],
     dayGroups: [
       { label: 'Tag 8 · 20.08. Do · Namba & Dotonbori', color: 'var(--day-a)', items: [
-        { num: 3, title: 'Namba Yasaka-Schrein', lat: 34.6615592, lng: 135.4967039, meta: 'Berühmtes Löwenkopf-Tor · kurzer Stopp' },
-        { num: 4, title: 'Shinsaibashi', lat: 34.6724248, lng: 135.5010362, meta: 'Große Einkaufsstraße · Shopping' },
-        { num: 5, title: 'Dotonbori', lat: 34.6686471, lng: 135.5030983, meta: 'Neonlichter, Streetfood · abends am schönsten' },
+        { num: 2, title: 'Namba Yasaka-Schrein', lat: 34.6615592, lng: 135.4967039, meta: 'Berühmtes Löwenkopf-Tor · kurzer Stopp' },
+        { num: 3, title: 'Shinsaibashi', lat: 34.6724248, lng: 135.5010362, meta: 'Große Einkaufsstraße · Shopping' },
+        { num: 4, title: 'Dotonbori', lat: 34.6686471, lng: 135.5030983, meta: 'Neonlichter, Streetfood · abends am schönsten' },
       ]},
       { label: 'Tag 9 · 21.08. Fr · Osaka Castle', color: 'var(--day-b)', items: [
-        { num: 6, title: 'Osaka Castle', lat: 34.6872571, lng: 135.5258546, meta: 'Museum & Aussichtsplattform · Tickets vorab online' },
+        { num: 5, title: 'Osaka Castle', lat: 34.6872571, lng: 135.5258546, meta: 'Museum & Aussichtsplattform · Tickets vorab online' },
       ]},
     ],
     food: [
-      { num: 7, title: 'OKO Takoyaki', lat: 34.672553, lng: 135.5033819, link: 'https://oko-osaka.wixsite.com/okotako', meta: '100% vegan & glutenfrei · Takoyaki aus Okara statt Octopus<br>✅ Vegetarisch: komplett vegan/vegetarisch', tag: 'TAKOYAKI' },
-      { num: 8, title: 'OKO – Fun Okonomiyaki Bar', lat: 34.6687807, lng: 135.4981548, link: 'https://www.tripadvisor.com/Restaurant_Review-g298566-d27364248-Reviews-Oko_Fun_Okonomiyaki_Bar-Osaka_Osaka_Prefecture_Kinki.html', meta: 'Auch vegan/glutenfrei<br>✅ Vegetarisch: explizit vegane/vegetarische Okonomiyaki', tag: 'OKONOMIYAKI' },
-      { num: 9, title: 'Ichiran Ramen', lat: 34.6684219, lng: 135.5032242, link: 'https://tabelog.com/en/osaka/A2701/A270202/27084189/', meta: '24h geöffnet, Tischplätze für Gruppen<br>✅ Vegetarisch: bietet mittlerweile tonkotsu-freien/vegetarischen Ramen an', tag: 'RAMEN' },
+      { num: 6, title: 'OKO Takoyaki', lat: 34.672553, lng: 135.5033819, link: 'https://oko-osaka.wixsite.com/okotako', meta: '100% vegan & glutenfrei · Takoyaki aus Okara statt Octopus<br>✅ Vegetarisch: komplett vegan/vegetarisch', tag: 'TAKOYAKI' },
+      { num: 7, title: 'OKO – Fun Okonomiyaki Bar', lat: 34.6687807, lng: 135.4981548, link: 'https://www.tripadvisor.com/Restaurant_Review-g298566-d27364248-Reviews-Oko_Fun_Okonomiyaki_Bar-Osaka_Osaka_Prefecture_Kinki.html', meta: 'Auch vegan/glutenfrei<br>✅ Vegetarisch: explizit vegane/vegetarische Okonomiyaki', tag: 'OKONOMIYAKI' },
+      { num: 8, title: 'Ichiran Ramen', lat: 34.6684219, lng: 135.5032242, link: 'https://tabelog.com/en/osaka/A2701/A270202/27084189/', meta: '24h geöffnet, Tischplätze für Gruppen<br>✅ Vegetarisch: bietet mittlerweile tonkotsu-freien/vegetarischen Ramen an', tag: 'RAMEN' },
     ]
   },
 
@@ -736,6 +747,42 @@ const CITIES = {
     ]
   }
 };
+
+const PHRASES = [
+  { group: 'Begrüßung & Höflichkeit', items: [
+    { de: 'Guten Tag', jp: 'こんにちは', romaji: 'Konnichiwa' },
+    { de: 'Danke', jp: 'ありがとうございます', romaji: 'Arigatō gozaimasu' },
+    { de: 'Entschuldigung / Verzeihung', jp: 'すみません', romaji: 'Sumimasen' },
+    { de: 'Ja / Nein', jp: 'はい / いいえ', romaji: 'Hai / Iie' },
+    { de: 'Bitte (bei Bitten)', jp: 'お願いします', romaji: 'Onegaishimasu' },
+  ]},
+  { group: 'Im Restaurant', items: [
+    { de: 'Tisch für 5 Personen, bitte', jp: '5人でお願いします', romaji: 'Go-nin de onegaishimasu' },
+    { de: 'Ich bin Vegetarierin', jp: 'ベジタリアンです', romaji: 'Bejitarian desu' },
+    { de: 'Ohne Fleisch und Fisch, bitte', jp: '肉と魚は抜きでお願いします', romaji: 'Niku to sakana wa nuki de onegaishimasu' },
+    { de: 'Was empfehlen Sie?', jp: 'おすすめは何ですか？', romaji: 'Osusume wa nan desu ka?' },
+    { de: 'Die Rechnung, bitte', jp: 'お会計お願いします', romaji: 'Okaikei onegaishimasu' },
+    { de: 'Das war lecker!', jp: 'おいしかったです', romaji: 'Oishikatta desu' },
+  ]},
+  { group: 'Unterwegs & Bahn', items: [
+    { de: 'Wo ist die Toilette?', jp: 'トイレはどこですか？', romaji: 'Toire wa doko desu ka?' },
+    { de: 'Wo ist der Bahnhof?', jp: '駅はどこですか？', romaji: 'Eki wa doko desu ka?' },
+    { de: 'Wie komme ich zu...?', jp: '〜へはどう行きますか？', romaji: '~e wa dō ikimasu ka?' },
+    { de: 'Ich verstehe nicht', jp: 'わかりません', romaji: 'Wakarimasen' },
+    { de: 'Sprechen Sie Englisch?', jp: '英語を話せますか？', romaji: 'Eigo o hanasemasu ka?' },
+  ]},
+  { group: 'Shopping', items: [
+    { de: 'Wie viel kostet das?', jp: 'いくらですか？', romaji: 'Ikura desu ka?' },
+    { de: 'Nehme ich', jp: 'これをください', romaji: 'Kore o kudasai' },
+    { de: 'Kann ich mit Karte zahlen?', jp: 'カードは使えますか？', romaji: 'Kādo wa tsukaemasu ka?' },
+  ]},
+  { group: 'Notfall & Gesundheit', items: [
+    { de: 'Hilfe!', jp: '助けて！', romaji: 'Tasukete!' },
+    { de: 'Ich brauche einen Arzt', jp: '医者が必要です', romaji: 'Isha ga hitsuyō desu' },
+    { de: 'Ruf bitte einen Krankenwagen', jp: '救急車を呼んでください', romaji: 'Kyūkyūsha o yonde kudasai' },
+    { de: 'Wo ist die nächste Apotheke?', jp: '一番近い薬局はどこですか？', romaji: 'Ichiban chikai yakkyoku wa doko desu ka?' },
+  ]},
+];
 
 const TRAVEL = {
   label: 'An- & Abreise',
@@ -1203,11 +1250,41 @@ function quickYen(amount) {
   convertFromYen(amount);
 }
 
+/* ============ PHRASEN ============ */
+function buildPhrasePanel() {
+  const panel = document.createElement('div');
+  panel.className = 'city-panel';
+  panel.id = 'panel-phrasen';
+
+  panel.innerHTML = `
+    <div class="city-header">
+      <span class="emoji">🗣️</span>
+      <h2>Nützliche Phrasen</h2>
+      <p>Für Fragen ohne Internet: Google Translate (Kamera/Offline-Modus) installieren</p>
+    </div>
+    ${PHRASES.map(g => `
+      <div class="section">
+        <div class="section-title">${g.group}</div>
+        ${g.items.map(p => `
+          <div class="phrase-card">
+            <p class="phrase-de">${p.de}</p>
+            <p class="phrase-jp">${p.jp}</p>
+            <p class="phrase-romaji">${p.romaji}</p>
+          </div>
+        `).join('')}
+      </div>
+    `).join('')}
+  `;
+
+  content.appendChild(panel);
+}
+
 /* ============ INIT ============ */
 try {
   Object.keys(CITIES).forEach(key => buildPanel(key, CITIES[key]));
   buildTravelPanel();
   buildCurrencyPanel();
+  buildPhrasePanel();
 } catch (e) {
   console.error('Fehler beim Aufbau der Inhalte:', e);
   content.innerHTML = `<div style="padding:20px;color:#C0392B;font-size:13px;">
@@ -1220,7 +1297,7 @@ function activateCity(key) {
   document.querySelectorAll('.city-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + key).classList.add('active');
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('active', b.dataset.city === key));
-  if (key !== 'reise' && key !== 'waehrung') setTimeout(() => initMap(key), 50);
+  if (!['reise', 'waehrung', 'phrasen'].includes(key)) setTimeout(() => initMap(key), 50);
 }
 
 document.querySelectorAll('#tabs button').forEach(btn => {
