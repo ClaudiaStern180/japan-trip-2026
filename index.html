@@ -401,6 +401,18 @@
     flex-shrink: 0; background: none; border: none; color: var(--hotel);
     font-size: 16px; cursor: pointer; padding: 4px;
   }
+  .rename-input {
+    width: 100%;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    border: 1.5px solid var(--gold);
+    border-radius: 6px;
+    padding: 3px 6px;
+    font-family: inherit;
+    background: var(--cream);
+  }
+  .rename-input:focus { outline: none; }
 
   footer {
     text-align: center; padding: 18px; font-size: 10.5px; color: var(--muted);
@@ -590,7 +602,7 @@ const CITIES = {
         meta: '🚇 Ryogoku Station (JR Sobu-Linie / Toei Oedo-Linie), 2–3 Min.<br>Ryogoku, Sumo-Viertel<br><b>13.–17.08.2026</b> · Check-in ab 16:00 Uhr (Self-Check-in am Tablet im EG)<br>Buchungsnr. 5352711039<br><b>🔑 Check-in-Code: 633407</b><br><a href="https://connect.minpakuin.jp/register/AAABhpgvPWhScVgOvfj5N1ge53zLph2oKqE" target="_blank" rel="noopener">Check-in-Seite & QR-Code öffnen</a>' },
     ],
     itinerary: [
-      { date: '13.8. Mi', program: 'Ankunft Haneda 22:20 · Nur Transfer & schlafen' },
+      { date: '13.8. Mi', program: 'Ankunft Narita 17:35 · Transfer zum Hotel · Check-in ab 16:00 Uhr' },
       { date: '14.8. Do', program: 'Asakusa & Senso-ji · Streetfood · Akihabara · abends Karaoke' },
       { date: '15.8. Fr', program: 'Harajuku/Takeshita-dori · Meiji-Schrein & Gärten · Shibuya Crossing & Hachiko · Shibuya Sky zum Sonnenuntergang' },
       { date: '16.8. Sa', program: 'teamLab Planets (morgens oder abends) · Sushi-Kurs' },
@@ -923,9 +935,6 @@ async function handleUpload(category, inputEl) {
   const file = inputEl.files[0];
   if (!file) return;
 
-  const defaultName = file.name.replace(/\.[^/.]+$/, '');
-  const docName = prompt('Wie soll dieses Dokument heißen?', defaultName) || file.name;
-
   const btn = document.getElementById('btn-' + category);
   btn.classList.add('uploading');
   btn.firstChild.textContent = '⏳ Wird hochgeladen...';
@@ -936,7 +945,7 @@ async function handleUpload(category, inputEl) {
     alert('Fehler beim Hochladen: ' + upErr.message);
   } else {
     await sbClient.from('trip_files').insert({
-      category, filename: docName, storage_path: path, file_size_kb: Math.round(file.size / 1024)
+      category, filename: file.name, storage_path: path, file_size_kb: Math.round(file.size / 1024)
     });
     await loadFiles(category);
   }
@@ -945,9 +954,25 @@ async function handleUpload(category, inputEl) {
   inputEl.value = '';
 }
 
-async function renameFile(id, category, currentName) {
-  const newName = prompt('Neuer Name für dieses Dokument:', currentName);
-  if (!newName || newName === currentName) return;
+function startRename(id, category) {
+  const nameEl = document.getElementById('fname-' + id);
+  if (!nameEl) return;
+  const currentName = nameEl.textContent;
+  nameEl.innerHTML = `<input type="text" id="rename-input-${id}" class="rename-input" value="${currentName.replace(/"/g, '&quot;')}" />`;
+  const input = document.getElementById('rename-input-' + id);
+  input.focus();
+  input.select();
+  const save = () => saveRename(id, category, input.value);
+  input.addEventListener('blur', save, { once: true });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { input.removeEventListener('blur', save); loadFiles(category); }
+  });
+}
+
+async function saveRename(id, category, newName) {
+  newName = (newName || '').trim();
+  if (!newName) { await loadFiles(category); return; }
   await sbClient.from('trip_files').update({ filename: newName }).eq('id', id);
   await loadFiles(category);
 }
@@ -965,15 +990,14 @@ async function loadFiles(category) {
       .createSignedUrl(f.storage_path, 3600); // Link gültig für 1 Stunde
     const icon = f.filename.toLowerCase().endsWith('.pdf') ? '📄' : '🖼️';
     const href = urlData ? urlData.signedUrl : '#';
-    const safeName = f.filename.replace(/'/g, "\\'");
     return `
       <div class="file-card">
         <span class="ficon">${icon}</span>
         <div class="finfo">
-          <div class="fname">${f.filename}</div>
+          <div class="fname" id="fname-${f.id}">${f.filename}</div>
           <div class="fmeta">${f.file_size_kb || 0} KB</div>
         </div>
-        <button class="fdownload" style="border:none;cursor:pointer;" onclick="renameFile('${f.id}', '${category}', '${safeName}')">✏️</button>
+        <button class="fdownload" style="border:none;cursor:pointer;" onclick="startRename('${f.id}', '${category}')">✏️</button>
         <a class="fdownload" href="${href}" target="_blank" rel="noopener">Öffnen</a>
         <button class="fdelete" onclick="deleteFile('${f.id}', '${f.storage_path}', '${category}')">✕</button>
       </div>
