@@ -931,18 +931,59 @@ function uploadWidgetHTML(category, label) {
   `;
 }
 
+async function compressImageIfNeeded(file) {
+  // Nur Bilder über ~1.5 MB komprimieren, PDFs unverändert lassen
+  if (!file.type.startsWith('image/') || file.size < 1.5 * 1024 * 1024) return file;
+
+  try {
+    const bitmap = await createImageBitmap(file);
+    const maxDim = 1920;
+    let { width, height } = bitmap;
+    if (width > maxDim || height > maxDim) {
+      const scale = maxDim / Math.max(width, height);
+      width = Math.round(width * scale);
+      height = Math.round(height * scale);
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(bitmap, 0, 0, width, height);
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.82));
+    if (!blob) return file;
+    const newName = file.name.replace(/\.[^/.]+$/, '') + '.jpg';
+    return new File([blob], newName, { type: 'image/jpeg' });
+  } catch (e) {
+    console.error('Komprimierung fehlgeschlagen, lade Original hoch:', e);
+    return file;
+  }
+}
+
+async function uploadWithRetry(path, file, attempts = 2) {
+  for (let i = 0; i < attempts; i++) {
+    const { error } = await sbClient.storage.from(BUCKET).upload(path, file);
+    if (!error) return { error: null };
+    if (i === attempts - 1) return { error };
+    await new Promise(r => setTimeout(r, 1200)); // kurz warten vor erneutem Versuch
+  }
+}
+
 async function handleUpload(category, inputEl) {
-  const file = inputEl.files[0];
-  if (!file) return;
+  const rawFile = inputEl.files[0];
+  if (!rawFile) return;
 
   const btn = document.getElementById('btn-' + category);
   btn.classList.add('uploading');
+  btn.firstChild.textContent = '⏳ Wird verarbeitet...';
+
+  const file = await compressImageIfNeeded(rawFile);
+
   btn.firstChild.textContent = '⏳ Wird hochgeladen...';
 
   const path = `${category}/${Date.now()}_${file.name}`;
-  const { error: upErr } = await sbClient.storage.from(BUCKET).upload(path, file);
+  const { error: upErr } = await uploadWithRetry(path, file);
   if (upErr) {
-    alert('Fehler beim Hochladen: ' + upErr.message);
+    alert('Fehler beim Hochladen: ' + upErr.message + '\n\nBitte WLAN/Empfang prüfen und nochmal versuchen.');
   } else {
     await sbClient.from('trip_files').insert({
       category, filename: file.name, storage_path: path, file_size_kb: Math.round(file.size / 1024)
