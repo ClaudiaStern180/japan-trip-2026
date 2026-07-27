@@ -543,6 +543,7 @@
       <button data-city="reise">✈️ An-/Abreise</button>
       <button data-city="waehrung">💱 Yen/€ & Uhrzeit</button>
       <button data-city="phrasen">🗣️ Phrasen</button>
+      <button data-city="dokumente">📎 Dokumente</button>
     </div>
   </div>
 
@@ -586,7 +587,7 @@ const CITIES = {
     hotels: [
       { num: 1, title: 'Sumo Hotel Ryogoku', lat: 35.6907391, lng: 139.7910614,
         link: 'https://www.booking.com/hotel/jp/sumo-ryugoku.de.html',
-        meta: '🚇 Ryogoku Station (JR Sobu-Linie / Toei Oedo-Linie), 2–3 Min.<br>Ryogoku, Sumo-Viertel<br><b>13.–17.08.2026</b> · Check-in ab 16:00 Uhr (Self-Check-in am Tablet im EG)<br>Buchungsnr. 5352711039' },
+        meta: '🚇 Ryogoku Station (JR Sobu-Linie / Toei Oedo-Linie), 2–3 Min.<br>Ryogoku, Sumo-Viertel<br><b>13.–17.08.2026</b> · Check-in ab 16:00 Uhr (Self-Check-in am Tablet im EG)<br>Buchungsnr. 5352711039<br><b>🔑 Check-in-Code: 633407</b><br><a href="https://connect.minpakuin.jp/register/AAABhpgvPWhScVgOvfj5N1ge53zLph2oKqE" target="_blank" rel="noopener">Check-in-Seite & QR-Code öffnen</a>' },
     ],
     itinerary: [
       { date: '13.8. Mi', program: 'Ankunft Haneda 22:20 · Nur Transfer & schlafen' },
@@ -789,10 +790,10 @@ const TRAVEL = {
   dates: '13.08. – 27.08.2026',
   emoji: '✈️',
   flights: [
-    { num: 1, title: 'Anreise: Frankfurt → Tokio (Haneda)', date: '12.–13.08. Mi/Do', meta: '<b>Emirates · Buchungsnr. IG3WR2</b><br>FRA → DXB: EK048, Mi 12.08. 22:20 → Do 13.08. 06:40<br>DXB → HND: EK312, Do 13.08. 07:40 → 22:20 (Umsteigezeit Dubai: 1 Std.)<br>Economy Flex · alle 5 Reisenden · Suica kaufen<br><b>Transfer gebucht:</b> Abholung 23:00 Uhr, Booking.com Rides, Großraumwagen (max. 5 Pers.)<br>Buchungsnr. 505910979 · Ride-ID 397934291 · 56,64 € · kostenfreie Stornierung bis 12.08. 23:00 Uhr (JP-Zeit)' },
+    { num: 1, title: 'Anreise: Frankfurt → Tokio (Narita)', date: '12.–13.08. Mi/Do', meta: '<b>Emirates · Buchungsnr. IG3WR2</b><br>FRA → DXB: EK046, Mi 12.08. 15:15 → Do 13.08. 00:15<br>DXB → NRT: EK318, Do 13.08. 02:40 → 17:35 (Umsteigezeit Dubai: 2 Std. 25 Min.)<br>Economy Flex · alle 5 Reisenden · Suica kaufen<br>⚠️ Ankunft in <b>Narita</b>, nicht Haneda!<br><b>Transfer gebucht:</b> Booking.com Rides · Buchungsref. 382939469 · People Carrier (max. 5 Pers.)<br>Flexible Abholzeit, verfolgt Flug EK318, wartet 45 Min. · Ride-ID 395053074 · 73,93 €' },
     { num: 2, title: 'Flug Osaka → Okinawa', date: '22.08. Sa', meta: '<b>MM219</b> · Abflug 11:45 Uhr<br>Buchungscode: FP5DXF (alle 5 Reisenden)' },
     { num: 3, title: 'Flug Okinawa → Tokio', date: '26.08. Mi', meta: '<b>MM504</b> · Abflug 12:05 Uhr<br>Buchungscode: 6U69GT (alle 5 Reisenden)<br>Danach Transfer & Shopping in Shinjuku' },
-    { num: 4, title: 'Abreise: Tokio (Narita) → Frankfurt', date: '27.–28.08. Do/Fr', meta: '<b>Emirates · Buchungsnr. IG3WR2</b><br>NRT → DXB: EK319, Do 27.08. 22:30 → Fr 28.08. 04:05<br>DXB → FRA: EK045, Fr 28.08. 08:25 → 13:15 (Umsteigezeit Dubai: 4 Std. 20 Min.)<br>Economy Flex · alle 5 Reisenden<br>Freier Vormittag am 27.08. für letzte Souvenirs davor' },
+    { num: 4, title: 'Abreise: Tokio (Narita) → Frankfurt', date: '27.–28.08. Do/Fr', meta: '<b>Emirates · Buchungsnr. IG3WR2</b><br>NRT → DXB: EK319, Do 27.08. 22:30 → Fr 28.08. 04:05<br>DXB → FRA: EK045, Fr 28.08. 08:10 → 13:15 (Umsteigezeit Dubai: 4 Std. 5 Min.)<br>Economy Flex · alle 5 Reisenden · Sitzplätze bereits zugewiesen (Reihe 65/77)<br>Freier Vormittag am 27.08. für letzte Souvenirs davor' },
   ]
 };
 
@@ -921,6 +922,10 @@ function uploadWidgetHTML(category, label) {
 async function handleUpload(category, inputEl) {
   const file = inputEl.files[0];
   if (!file) return;
+
+  const defaultName = file.name.replace(/\.[^/.]+$/, '');
+  const docName = prompt('Wie soll dieses Dokument heißen?', defaultName) || file.name;
+
   const btn = document.getElementById('btn-' + category);
   btn.classList.add('uploading');
   btn.firstChild.textContent = '⏳ Wird hochgeladen...';
@@ -931,13 +936,20 @@ async function handleUpload(category, inputEl) {
     alert('Fehler beim Hochladen: ' + upErr.message);
   } else {
     await sbClient.from('trip_files').insert({
-      category, filename: file.name, storage_path: path, file_size_kb: Math.round(file.size / 1024)
+      category, filename: docName, storage_path: path, file_size_kb: Math.round(file.size / 1024)
     });
     await loadFiles(category);
   }
   btn.classList.remove('uploading');
   btn.firstChild.textContent = btn.dataset.label || '📎 Hochladen';
   inputEl.value = '';
+}
+
+async function renameFile(id, category, currentName) {
+  const newName = prompt('Neuer Name für dieses Dokument:', currentName);
+  if (!newName || newName === currentName) return;
+  await sbClient.from('trip_files').update({ filename: newName }).eq('id', id);
+  await loadFiles(category);
 }
 
 async function loadFiles(category) {
@@ -953,6 +965,7 @@ async function loadFiles(category) {
       .createSignedUrl(f.storage_path, 3600); // Link gültig für 1 Stunde
     const icon = f.filename.toLowerCase().endsWith('.pdf') ? '📄' : '🖼️';
     const href = urlData ? urlData.signedUrl : '#';
+    const safeName = f.filename.replace(/'/g, "\\'");
     return `
       <div class="file-card">
         <span class="ficon">${icon}</span>
@@ -960,6 +973,7 @@ async function loadFiles(category) {
           <div class="fname">${f.filename}</div>
           <div class="fmeta">${f.file_size_kb || 0} KB</div>
         </div>
+        <button class="fdownload" style="border:none;cursor:pointer;" onclick="renameFile('${f.id}', '${category}', '${safeName}')">✏️</button>
         <a class="fdownload" href="${href}" target="_blank" rel="noopener">Öffnen</a>
         <button class="fdelete" onclick="deleteFile('${f.id}', '${f.storage_path}', '${category}')">✕</button>
       </div>
@@ -1279,12 +1293,42 @@ function buildPhrasePanel() {
   content.appendChild(panel);
 }
 
+/* ============ WEITERE DOKUMENTE ============ */
+const DOC_CATEGORIES = [
+  { key: 'einreise', label: 'Einreise-QR-Codes', hint: 'z.B. Visit Japan Web QR-Code' },
+  { key: 'sonstige', label: 'Sonstige Dokumente', hint: 'Versicherung, Notizen, Sonstiges' },
+];
+
+function buildDocumentsPanel() {
+  const panel = document.createElement('div');
+  panel.className = 'city-panel';
+  panel.id = 'panel-dokumente';
+
+  panel.innerHTML = `
+    <div class="city-header">
+      <span class="emoji">📎</span>
+      <h2>Weitere Dokumente</h2>
+      <p>Einreise-QR-Codes & alles andere, was ihr braucht – frei benennbar</p>
+    </div>
+    ${DOC_CATEGORIES.map(c => `
+      <div class="section">
+        <div class="section-title">${c.label}</div>
+        ${uploadWidgetHTML(c.key, c.hint)}
+      </div>
+    `).join('')}
+  `;
+
+  content.appendChild(panel);
+  DOC_CATEGORIES.forEach(c => initUploadWidgets(c.key));
+}
+
 /* ============ INIT ============ */
 try {
   Object.keys(CITIES).forEach(key => buildPanel(key, CITIES[key]));
   buildTravelPanel();
   buildCurrencyPanel();
   buildPhrasePanel();
+  buildDocumentsPanel();
 } catch (e) {
   console.error('Fehler beim Aufbau der Inhalte:', e);
   content.innerHTML = `<div style="padding:20px;color:#C0392B;font-size:13px;">
@@ -1297,7 +1341,7 @@ function activateCity(key) {
   document.querySelectorAll('.city-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + key).classList.add('active');
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('active', b.dataset.city === key));
-  if (!['reise', 'waehrung', 'phrasen'].includes(key)) setTimeout(() => initMap(key), 50);
+  if (!['reise', 'waehrung', 'phrasen', 'dokumente'].includes(key)) setTimeout(() => initMap(key), 50);
 }
 
 document.querySelectorAll('#tabs button').forEach(btn => {
