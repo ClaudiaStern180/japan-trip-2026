@@ -416,6 +416,25 @@
     font-family: inherit;
   }
   .esim-copy-btn.copied { background: #3C7A5B; }
+  .esim-device-hint {
+    background: var(--cream);
+    border-left: 3px solid var(--gold);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+  .esim-upload-wrap {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+  }
+  .esim-upload-wrap .upload-box { padding: 10px; }
+  .esim-upload-wrap .upload-btn { font-size: 12px; padding: 7px 14px; }
+  .esim-upload-wrap .upload-hint { font-size: 10px; }
+  .esim-upload-wrap .file-card { padding: 8px 10px; }
   .esim-check-btn {
     display: block;
     text-align: center;
@@ -835,14 +854,18 @@ const CITIES = {
 };
 
 const ESIM_DATA = [
-  { name: 'Linus', orderNo: '26080117190793' },
-  { name: 'Claudia', orderNo: '26080117115602' },
-  { name: 'Marina', orderNo: '26080117294079' },
-  { name: 'Florine', orderNo: '26080117860524' },
-  { name: 'Tabea', orderNo: '26080117760852' },
+  { name: 'Linus', orderNo: '26080117190793', device: 'ios' },
+  { name: 'Claudia', orderNo: '26080117115602', device: 'ios' },
+  { name: 'Marina', orderNo: '26080117294079', device: 'ios' },
+  { name: 'Florine', orderNo: '26080117860524', device: 'android' },
+  { name: 'Tabea', orderNo: '26080117760852', device: 'ios' },
 ];
 const ESIM_BALANCE_URL = 'https://static.redteago.com/h5/queryOrder/index.html';
 const ESIM_PLAN_INFO = '20 GB · 90 Tage · RedteaGO · 13,50 $';
+const ESIM_DEVICE_INSTRUCTIONS = {
+  ios: '📱 iPhone: Einstellungen → Mobilfunk → eSIM (RedteaGO) antippen → Verbrauch ansehen',
+  android: '🤖 Samsung: Einstellungen → Verbindungen → Datennutzung → SIM-Karte verwalten → eSIM (RedteaGO) antippen',
+};
 
 const PHRASES = [
   { group: 'Begrüßung & Höflichkeit', items: [
@@ -1451,25 +1474,30 @@ function buildEsimPanel() {
     <div class="city-header">
       <span class="emoji">📶</span>
       <h2>eSIM & Datenvolumen</h2>
-      <p>Bestellnummer kopieren, dann auf der RedteaGO-Seite eingeben, um den Verbrauch zu sehen</p>
+      <p>Bestellnummer kopieren, dann auf der RedteaGO-Seite eingeben – oder am zuverlässigsten: direkt am eigenen Gerät nachschauen</p>
     </div>
     <div class="section">
       ${ESIM_DATA.map((p, i) => `
         <div class="esim-card">
-          <p class="esim-name">📱 ${p.name}</p>
+          <p class="esim-name">${p.device === 'ios' ? '📱' : '🤖'} ${p.name}</p>
           <p class="esim-plan">${ESIM_PLAN_INFO}</p>
           <div class="esim-order-row">
             <span class="esim-order-label">Order-Nr.</span>
             <span class="esim-order-num" id="esim-order-${i}">${p.orderNo}</span>
             <button class="esim-copy-btn" id="esim-copy-${i}" onclick="copyEsimOrder(${i})">Kopieren</button>
           </div>
-          <a class="esim-check-btn" href="${ESIM_BALANCE_URL}" target="_blank" rel="noopener">Datenvolumen prüfen →</a>
+          <div class="esim-device-hint">${ESIM_DEVICE_INSTRUCTIONS[p.device]}</div>
+          <a class="esim-check-btn" href="${ESIM_BALANCE_URL}" target="_blank" rel="noopener">Alternativ: RedteaGO-Seite öffnen →</a>
+          <div class="esim-upload-wrap">
+            ${uploadWidgetHTML('esim_' + p.name.toLowerCase(), 'QR-Code ' + p.name)}
+          </div>
         </div>
       `).join('')}
     </div>
   `;
 
   content.appendChild(panel);
+  ESIM_DATA.forEach(p => initUploadWidgets('esim_' + p.name.toLowerCase()));
 }
 
 function copyEsimOrder(i) {
