@@ -431,10 +431,16 @@
     padding-top: 12px;
     border-top: 1px dashed var(--line);
   }
-  .esim-upload-wrap .upload-box { padding: 10px; }
-  .esim-upload-wrap .upload-btn { font-size: 12px; padding: 7px 14px; }
+  .esim-upload-wrap .upload-box { padding: 8px; border-width: 1px; }
+  .esim-upload-wrap .upload-btn {
+    font-size: 11.5px;
+    padding: 6px 12px;
+    background: transparent;
+    color: var(--navy);
+    border: 1.5px solid var(--line);
+  }
   .esim-upload-wrap .upload-hint { font-size: 10px; }
-  .esim-upload-wrap .file-card { padding: 8px 10px; }
+  .esim-upload-wrap .file-card { padding: 8px 10px; box-shadow: none; }
   .esim-check-btn {
     display: block;
     text-align: center;
@@ -1017,7 +1023,7 @@ function getComputedColor(cssVar) {
 }
 
 /* ============ UPLOAD-WIDGET ============ */
-function uploadWidgetHTML(category, label) {
+function uploadWidgetHTML(category, label, compact) {
   if (!sbClient) {
     return `
       <div class="tickets-empty">
@@ -1025,13 +1031,14 @@ function uploadWidgetHTML(category, label) {
         Upload noch nicht aktiv – Supabase-Zugangsdaten fehlen im Code
       </div>`;
   }
+  const btnText = compact ? `📎 Weiteres Dokument hinzufügen` : `📎 ${label} hochladen`;
   return `
     <div class="upload-box" id="upload-${category}">
-      <label class="upload-btn" id="btn-${category}" data-label="📎 ${label} hochladen">
-        📎 ${label} hochladen
+      <label class="upload-btn" id="btn-${category}" data-label="${btnText}">
+        ${btnText}
         <input type="file" id="input-${category}" onchange="handleUpload('${category}', this)" />
       </label>
-      <div class="upload-hint">PDF, JPG oder PNG · für alle 5 Reisenden sichtbar</div>
+      ${compact ? '' : '<div class="upload-hint">PDF, JPG oder PNG · für alle 5 Reisenden sichtbar</div>'}
     </div>
     <div id="filelist-${category}" style="margin-top:10px;"></div>
   `;
@@ -1489,7 +1496,7 @@ function buildEsimPanel() {
           <div class="esim-device-hint">${ESIM_DEVICE_INSTRUCTIONS[p.device]}</div>
           <a class="esim-check-btn" href="${ESIM_BALANCE_URL}" target="_blank" rel="noopener">Alternativ: RedteaGO-Seite öffnen →</a>
           <div class="esim-upload-wrap">
-            ${uploadWidgetHTML('esim_' + p.name.toLowerCase(), 'QR-Code ' + p.name)}
+            ${uploadWidgetHTML('esim_' + p.name.toLowerCase(), 'QR-Code ' + p.name, true)}
           </div>
         </div>
       `).join('')}
