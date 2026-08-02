@@ -702,8 +702,8 @@ const CITIES = {
     itinerary: [
       { date: '13.8. Mi', program: 'Ankunft Narita 17:35 · Transfer zum Hotel · Check-in ab 16:00 Uhr' },
       { date: '14.8. Do', program: 'Asakusa & Senso-ji · Streetfood · Akihabara · abends Karaoke' },
-      { date: '15.8. Fr', program: 'Harajuku/Takeshita-dori · Meiji-Schrein & Gärten · Shibuya Crossing & Hachiko · Shibuya Sky zum Sonnenuntergang' },
-      { date: '16.8. Sa', program: 'teamLab Planets (morgens oder abends) · Sushi-Kurs' },
+      { date: '15.8. Fr', program: 'Harajuku/Takeshita-dori · Meiji-Schrein & Gärten · Shibuya Crossing & Hachiko · Sumo Show (Shinjuku) · Shibuya Sky zum Sonnenuntergang' },
+      { date: '16.8. Sa', program: 'teamLab Planets (morgens oder abends) · Hamarikyu Gardens · Sushi-Kurs' },
     ],
     dayGroups: [
       { label: 'Asakusa & Akihabara', color: 'var(--day-a)', items: [
@@ -712,20 +712,30 @@ const CITIES = {
       ]},
       { label: 'Harajuku & Shibuya', color: 'var(--day-b)', items: [
         { num: 4, title: 'Takeshita-dori', lat: 35.6710335, lng: 139.7051821, meta: 'Shopping, Crepes & Snacks' },
-        { num: 5, title: 'Meiji-Schrein & Gärten', lat: 35.6763976, lng: 139.6993259, meta: 'Am besten früh morgens' },
-        { num: 6, title: 'Shibuya Crossing & Hachiko', lat: 35.659482, lng: 139.7005596, meta: 'Ikonische Kreuzung' },
-        { num: 7, title: 'Shibuya Sky', lat: 35.6586719, lng: 139.7019848, meta: 'Sunset-Slot vorab buchen!' },
+        { num: 5, title: 'Cat Street', lat: 35.6671358, lng: 139.7064336, meta: 'Trendige Sneaker-/Streetwear-Boutiquen · entspannter als Takeshita-dori, gut für Teens' },
+        { num: 6, title: 'Omotesando', lat: 35.667355, lng: 139.707743, meta: '"Champs-Élysées Tokios" · gehobenes, internationales Markenshopping – eher für Erwachsene' },
+        { num: 7, title: 'Ginza', lat: 35.6697688, lng: 139.7641762, meta: 'Tokios elegantestes Viertel · gehobene Kaufhäuser & Luxusmarken – eher für Erwachsene' },
+        { num: 8, title: 'Shimokitazawa', lat: 35.663185, lng: 139.6674333, meta: '🌿 Geheimtipp: Bohemian-Vintage-Viertel mit verwinkelten Gassen, Second-Hand-/Indie-Fashion, kaum Touristen – beliebt bei jungen Locals. Etwas außerhalb, eigene Bahnstation' },
+        { num: 9, title: 'Meiji-Schrein & Gärten', lat: 35.6763976, lng: 139.6993259, meta: 'Am besten früh morgens' },
+        { num: 10, title: 'Shibuya Crossing & Hachiko', lat: 35.659482, lng: 139.7005596, meta: 'Ikonische Kreuzung' },
+        { num: 11, title: 'Shibuya 109', lat: 35.6595771, lng: 139.698728, meta: 'Kult-Kaufhaus für junge Mode · sehr beliebt bei Teenagern, direkt an der Crossing' },
+        { num: 12, title: 'Sumo Show – Shinjuku Sumo Club', lat: 35.7025151, lng: 139.7080267, link: 'https://www.tickets-tokyo.com/sumo-experience/', meta: '🥋 Live-Kämpfe von Ex-Ringern, Q&A, Ring-Challenge, Foto · 1,5 Std. · ~11.500–12.000 ¥/Person (ohne Essen, da ihr ja schon Chanko geplant habt) · vorab online buchen' },
+        { num: 13, title: 'Shibuya Sky', lat: 35.6586719, lng: 139.7019848, meta: 'Sunset-Slot vorab buchen!' },
       ]},
       { label: 'teamLab', color: 'var(--day-c)', items: [
-        { num: 8, title: 'teamLab Planets TOKYO', lat: 35.6491207, lng: 139.7897739, meta: 'Barfuß-Erlebnis · danach Sushi-Kurs in der Nähe' },
+        { num: 14, title: 'teamLab Planets TOKYO', lat: 35.6491207, lng: 139.7897739, meta: 'Barfuß-Erlebnis · danach Sushi-Kurs in der Nähe' },
+        { num: 15, title: 'Hamarikyu Gardens', lat: 35.6596559, lng: 139.7634091, meta: 'Traditioneller Edo-Garten mit Teehaus, Kontrast zu den Shiodome-Wolkenkratzern · Eintritt 300 ¥' },
+      ]},
+      { label: 'Shinjuku (passt zu eurem Shopping-Stopp am 26.08.)', color: 'var(--day-a)', items: [
+        { num: 16, title: 'Tocho Aussichtsplattform', lat: 35.689733, lng: 139.6916563, meta: '🆓 Kostenlose Alternative zu Shibuya Sky! 202 m hoch, 45. Stock, bei klarem Wetter Blick bis zum Fuji · North Tower Mo geschlossen, South Tower meist täglich · geöffnet bis in den Abend, toll zum Sonnenuntergang' },
       ]},
     ],
     food: [
-      { num: 9, title: 'Chanko Kirishima', lat: 35.695655, lng: 139.7916042, link: 'https://c-kirishima.com/', meta: 'Klassisches Chanko-Nabe · gut für Gruppen<br>✅ Vegetarisch: Optionen im Menü vorhanden', tag: 'CHANKO' },
-      { num: 10, title: 'Chanko Tomoegata', lat: 35.694921, lng: 139.7925488, link: 'https://www.tomoegata.com/', meta: 'Traditionsreiches Chanko-Restaurant, sehr familienfreundlich<br>✅ Vegetarisch: auf Anfrage bei Reservierung anpassbar', tag: 'CHANKO' },
-      { num: 11, title: "Beck's Coffee Shop", lat: 35.6958669, lng: 139.7922972, link: 'https://www.jr-foods.co.jp/becks/', meta: 'Warme Frühstücksgerichte, direkt am Bahnhof · ab 7 Uhr<br>✅ Vegetarisch: Café-Konzept, unproblematisch', tag: 'FRÜHSTÜCK' },
-      { num: 12, title: 'Oasis Ryogoku', lat: 35.6908884, lng: 139.7919627, link: 'https://tabelog.com/en/tokyo/A1312/A131201/13256200/', meta: 'Gemütliches Bagel-Café<br>✅ Vegetarisch: mehrere Bagel-Varianten möglich', tag: 'FRÜHSTÜCK' },
-      { num: 13, title: 'Saint Marc Café', lat: 35.6954732, lng: 139.7921092, link: 'https://www.saint-marc-hd.com/saintmarccafe/', meta: 'Sandwiches & Gebäck · ab 7 Uhr<br>✅ Vegetarisch: Café-Konzept, unproblematisch', tag: 'FRÜHSTÜCK' },
+      { num: 17, title: 'Chanko Kirishima', lat: 35.695655, lng: 139.7916042, link: 'https://c-kirishima.com/', meta: 'Klassisches Chanko-Nabe · gut für Gruppen<br>✅ Vegetarisch: Optionen im Menü vorhanden', tag: 'CHANKO' },
+      { num: 18, title: 'Chanko Tomoegata', lat: 35.694921, lng: 139.7925488, link: 'https://www.tomoegata.com/', meta: 'Traditionsreiches Chanko-Restaurant, sehr familienfreundlich<br>✅ Vegetarisch: auf Anfrage bei Reservierung anpassbar', tag: 'CHANKO' },
+      { num: 19, title: "Beck's Coffee Shop", lat: 35.6958669, lng: 139.7922972, link: 'https://www.jr-foods.co.jp/becks/', meta: 'Warme Frühstücksgerichte, direkt am Bahnhof · ab 7 Uhr<br>✅ Vegetarisch: Café-Konzept, unproblematisch', tag: 'FRÜHSTÜCK' },
+      { num: 20, title: 'Oasis Ryogoku', lat: 35.6908884, lng: 139.7919627, link: 'https://tabelog.com/en/tokyo/A1312/A131201/13256200/', meta: 'Gemütliches Bagel-Café<br>✅ Vegetarisch: mehrere Bagel-Varianten möglich', tag: 'FRÜHSTÜCK' },
+      { num: 21, title: 'Saint Marc Café', lat: 35.6954732, lng: 139.7921092, link: 'https://www.saint-marc-hd.com/saintmarccafe/', meta: 'Sandwiches & Gebäck · ab 7 Uhr<br>✅ Vegetarisch: Café-Konzept, unproblematisch', tag: 'FRÜHSTÜCK' },
     ]
   },
 
@@ -751,7 +761,7 @@ const CITIES = {
     ],
     itinerary: [
       { date: '17.8. Mo', program: 'Shinkansen Tokio → Kyoto · Kimono-Verleih · Sannenzaka · Gion' },
-      { date: '18.8. Di', program: 'Fushimi Inari früh morgens · Teezeremonie · Kiyomizudera/Sannenzaka' },
+      { date: '18.8. Di', program: 'Fushimi Inari früh morgens · Kiyomizudera/Sannenzaka · Shopping' },
       { date: '19.8. Mi', program: 'Arashiyama Bambuswald (sehr früh!) · Optional: Kinkaku-ji' },
     ],
     dayGroups: [
@@ -759,24 +769,26 @@ const CITIES = {
         { num: 3, title: 'Fushimi Inari-Taisha', lat: 34.9676945, lng: 135.7791876, meta: '10.000 Torii-Tore · am besten sehr früh (5–6 Uhr)' },
         { num: 4, title: 'Gion-Viertel', lat: 35.0037816, lng: 135.777245, meta: 'Geisha-Viertel · Maiko-Chance am Abend' },
         { num: 5, title: 'Pontocho', lat: 35.0064277, lng: 135.7712162, meta: 'Stimmungsvolle Gasse am Fluss · Abendessen' },
+        { num: 6, title: 'Kiyamachi-dori', lat: 35.0008496, lng: 135.769274, meta: '🌿 Geheimtipp: Parallel zu Pontocho am Takase-Kanal, aber deutlich weniger touristisch – kleine Vintage-Läden, Boutiquen & gemütliche Bars' },
+        { num: 7, title: 'Teramachi-dori', lat: 35.0061863, lng: 135.7668873, meta: 'Überdachte Einkaufspassage · Mode, Manga/Anime-Läden, Souvenirs – für alle Altersgruppen, nah Nishiki Market' },
       ]},
       { label: 'Tag 6 · 19.08. Di · Arashiyama & Kita', color: 'var(--day-b)', items: [
-        { num: 6, title: 'Arashiyama Bambuswald', lat: 35.0168187, lng: 135.6713013, meta: 'Sehr früh starten – wird schnell voll!' },
-        { num: 7, title: 'Affentempel Iwatayama', lat: 35.011395, lng: 135.6766245, meta: '20–30 Min. Aufstieg, tolle Aussicht' },
-        { num: 8, title: 'Kinkaku-ji', lat: 35.03937, lng: 135.7292431, meta: 'Goldener Pavillon mit Teichspiegelung' },
-        { num: 9, title: 'Nijo-jo Schloss', lat: 35.0140379, lng: 135.7484258, meta: 'Nachtigallenboden, Ninomaru-Palast' },
+        { num: 8, title: 'Arashiyama Bambuswald', lat: 35.0168187, lng: 135.6713013, meta: 'Sehr früh starten – wird schnell voll!' },
+        { num: 9, title: 'Affentempel Iwatayama', lat: 35.011395, lng: 135.6766245, meta: '20–30 Min. Aufstieg, tolle Aussicht' },
+        { num: 10, title: 'Kinkaku-ji', lat: 35.03937, lng: 135.7292431, meta: 'Goldener Pavillon mit Teichspiegelung' },
+        { num: 11, title: 'Nijo-jo Schloss', lat: 35.0140379, lng: 135.7484258, meta: 'Nachtigallenboden, Ninomaru-Palast' },
       ]},
       { label: 'Tag 7 · 20.08. Mi · Higashiyama', color: 'var(--day-c)', items: [
-        { num: 10, title: 'Sannenzaka & Ninenzaka', lat: 34.9981744, lng: 135.7808578, meta: 'Steintreppen-Gassen · Teezeremonie vorab buchen' },
-        { num: 11, title: 'Kiyomizudera', lat: 34.9946662, lng: 135.784661, meta: 'Panoramablick über Kyoto' },
-        { num: 12, title: 'Maruyama Park', lat: 35.0035587, lng: 135.7805269, meta: 'Kyotos ältester Park, direkt neben Gion' },
+        { num: 12, title: 'Sannenzaka & Ninenzaka', lat: 34.9981744, lng: 135.7808578, meta: 'Steintreppen-Gassen mit vielen kleinen Läden & Boutiquen zum Shoppen' },
+        { num: 13, title: 'Kiyomizudera', lat: 34.9946662, lng: 135.784661, meta: 'Panoramablick über Kyoto' },
+        { num: 14, title: 'Maruyama Park', lat: 35.0035587, lng: 135.7805269, meta: 'Kyotos ältester Park, direkt neben Gion' },
       ]},
     ],
     food: [
-      { num: 13, title: 'VOG Kyoto', lat: 35.0046281, lng: 135.7683879, link: 'https://vog-kyoto.com/', meta: 'Rein vegetarisch/vegan/glutenfrei/Jain · indische Küche, 4,9★<br>✅ Vegetarisch: komplett vegetarisches Restaurant', tag: 'PONTOCHO' },
-      { num: 14, title: 'Gion Loka', lat: 35.0015905, lng: 135.7784572, link: 'https://sowaka.com/eng/restaurant/', meta: 'Kaiseki, gehoben · unbedingt vorab reservieren<br>✅ Vegetarisch: Küche geht auf Bedürfnisse ein (vorab angeben)', tag: 'GION' },
-      { num: 15, title: 'Nishiki Market', lat: 35.0050258, lng: 135.764723, link: 'https://www.kyoto-nishiki.or.jp/en/', meta: 'Streetfood-Markt zum Durchprobieren<br>✅ Vegetarisch: bei 100+ Ständen reichlich Auswahl', tag: 'MARKT' },
-      { num: 16, title: 'Nishiki Market Alley – Moon and Back', lat: 35.0051762, lng: 135.7622938, link: 'https://www.moonandbackkyoto.com/', meta: 'Ramen, auch vegan/glutenfrei/halal<br>✅ Vegetarisch: explizit vegane/vegetarische Ramen', tag: 'MARKT' },
+      { num: 15, title: 'VOG Kyoto', lat: 35.0046281, lng: 135.7683879, link: 'https://vog-kyoto.com/', meta: 'Rein vegetarisch/vegan/glutenfrei/Jain · indische Küche, 4,9★<br>✅ Vegetarisch: komplett vegetarisches Restaurant', tag: 'PONTOCHO' },
+      { num: 16, title: 'Gion Loka', lat: 35.0015905, lng: 135.7784572, link: 'https://sowaka.com/eng/restaurant/', meta: 'Kaiseki, gehoben · unbedingt vorab reservieren<br>✅ Vegetarisch: Küche geht auf Bedürfnisse ein (vorab angeben)', tag: 'GION' },
+      { num: 17, title: 'Nishiki Market', lat: 35.0050258, lng: 135.764723, link: 'https://www.kyoto-nishiki.or.jp/en/', meta: 'Streetfood-Markt zum Durchprobieren<br>✅ Vegetarisch: bei 100+ Ständen reichlich Auswahl', tag: 'MARKT' },
+      { num: 18, title: 'Nishiki Market Alley – Moon and Back', lat: 35.0051762, lng: 135.7622938, link: 'https://www.moonandbackkyoto.com/', meta: 'Ramen, auch vegan/glutenfrei/halal<br>✅ Vegetarisch: explizit vegane/vegetarische Ramen', tag: 'MARKT' },
     ]
   },
 
@@ -808,16 +820,18 @@ const CITIES = {
       { label: 'Tag 8 · 20.08. Do · Namba & Dotonbori', color: 'var(--day-a)', items: [
         { num: 2, title: 'Namba Yasaka-Schrein', lat: 34.6615592, lng: 135.4967039, meta: 'Berühmtes Löwenkopf-Tor · kurzer Stopp' },
         { num: 3, title: 'Shinsaibashi', lat: 34.6724248, lng: 135.5010362, meta: 'Große Einkaufsstraße · Shopping' },
-        { num: 4, title: 'Dotonbori', lat: 34.6686471, lng: 135.5030983, meta: 'Neonlichter, Streetfood · abends am schönsten' },
+        { num: 4, title: 'Amerika-mura', lat: 34.6722072, lng: 135.4978861, meta: 'Jugendlicher, hipper Vintage-/Streetwear-Bezirk direkt hinter Shinsaibashi – lockerer & jünger als die Louis-Vuitton-Ecke' },
+        { num: 5, title: 'Horie (Orange Street)', lat: 34.6709849, lng: 135.4963594, meta: '🌿 Geheimtipp: Direkt südlich von Amerika-mura, aber ruhiger & stylischer – Interior-Design-Läden, gemütliche Cafés, kaum Touristen' },
+        { num: 6, title: 'Dotonbori', lat: 34.6686471, lng: 135.5030983, meta: 'Neonlichter, Streetfood · abends am schönsten' },
       ]},
       { label: 'Tag 9 · 21.08. Fr · Osaka Castle', color: 'var(--day-b)', items: [
-        { num: 5, title: 'Osaka Castle', lat: 34.6872571, lng: 135.5258546, meta: 'Museum & Aussichtsplattform · Tickets vorab online' },
+        { num: 7, title: 'Osaka Castle', lat: 34.6872571, lng: 135.5258546, meta: 'Museum & Aussichtsplattform · Tickets vorab online' },
       ]},
     ],
     food: [
-      { num: 6, title: 'OKO Takoyaki', lat: 34.672553, lng: 135.5033819, link: 'https://oko-osaka.wixsite.com/okotako', meta: '100% vegan & glutenfrei · Takoyaki aus Okara statt Octopus<br>✅ Vegetarisch: komplett vegan/vegetarisch', tag: 'TAKOYAKI' },
-      { num: 7, title: 'OKO – Fun Okonomiyaki Bar', lat: 34.6687807, lng: 135.4981548, link: 'https://www.tripadvisor.com/Restaurant_Review-g298566-d27364248-Reviews-Oko_Fun_Okonomiyaki_Bar-Osaka_Osaka_Prefecture_Kinki.html', meta: 'Auch vegan/glutenfrei<br>✅ Vegetarisch: explizit vegane/vegetarische Okonomiyaki', tag: 'OKONOMIYAKI' },
-      { num: 8, title: 'Ichiran Ramen', lat: 34.6684219, lng: 135.5032242, link: 'https://tabelog.com/en/osaka/A2701/A270202/27084189/', meta: '24h geöffnet, Tischplätze für Gruppen<br>✅ Vegetarisch: bietet mittlerweile tonkotsu-freien/vegetarischen Ramen an', tag: 'RAMEN' },
+      { num: 8, title: 'OKO Takoyaki', lat: 34.672553, lng: 135.5033819, link: 'https://oko-osaka.wixsite.com/okotako', meta: '100% vegan & glutenfrei · Takoyaki aus Okara statt Octopus<br>✅ Vegetarisch: komplett vegan/vegetarisch', tag: 'TAKOYAKI' },
+      { num: 9, title: 'OKO – Fun Okonomiyaki Bar', lat: 34.6687807, lng: 135.4981548, link: 'https://www.tripadvisor.com/Restaurant_Review-g298566-d27364248-Reviews-Oko_Fun_Okonomiyaki_Bar-Osaka_Osaka_Prefecture_Kinki.html', meta: 'Auch vegan/glutenfrei<br>✅ Vegetarisch: explizit vegane/vegetarische Okonomiyaki', tag: 'OKONOMIYAKI' },
+      { num: 10, title: 'Ichiran Ramen', lat: 34.6684219, lng: 135.5032242, link: 'https://tabelog.com/en/osaka/A2701/A270202/27084189/', meta: '24h geöffnet, Tischplätze für Gruppen<br>✅ Vegetarisch: bietet mittlerweile tonkotsu-freien/vegetarischen Ramen an', tag: 'RAMEN' },
     ]
   },
 
