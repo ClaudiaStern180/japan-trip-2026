@@ -222,6 +222,22 @@
     color: var(--ink);
     line-height: 1.5;
   }
+  .schedule-toggle-btn {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+  }
+  .schedule-toggle-btn:active { background: var(--navy); color: var(--cream); }
 
   /* ---- Detaillierter Tagesablauf ---- */
   .schedule-block {
@@ -1035,12 +1051,28 @@ function buildPanel(cityKey, city) {
     <div class="section">
       <div class="section-title">🗓️ Tagesplan-Empfehlung</div>
       <div class="itinerary-table">
-        ${(city.itinerary || []).map(d => `
+        ${(city.itinerary || []).map((d, i) => {
+          const schedule = (city.daySchedules || []).find(s => s.date === d.date);
+          const scheduleId = `sched-${cityKey}-${i}`;
+          return `
           <div class="itinerary-row">
             <div class="itinerary-date">${d.date}</div>
             <div class="itinerary-program">${d.program}</div>
+            ${schedule ? `<button class="schedule-toggle-btn" onclick="toggleSchedule('${scheduleId}')" aria-label="Detaillierten Ablauf anzeigen">🕐</button>` : ''}
           </div>
-        `).join('')}
+          ${schedule ? `
+          <div class="schedule-block" id="${scheduleId}" style="display:none;">
+            <div class="schedule-note">${schedule.note || ''}</div>
+            ${schedule.items.map(it => `
+              <div class="schedule-row${it.activity.includes('💤') ? ' rest' : ''}">
+                <div class="schedule-time">${it.time}</div>
+                <div class="schedule-activity">${it.activity}</div>
+              </div>
+            `).join('')}
+          </div>
+          ` : ''}
+        `;
+        }).join('')}
       </div>
     </div>
 
@@ -1067,24 +1099,6 @@ function buildPanel(cityKey, city) {
       <div class="section-title">🍽️ Restaurants <span class="count">${city.food.length}</span></div>
       ${city.food.map(f => cardHTML(f, COLOR_FOOD, true)).join('')}
     </div>
-
-    ${(city.daySchedules && city.daySchedules.length) ? `
-    <div class="section">
-      <div class="section-title">🕐 Detaillierter Tagesablauf</div>
-      ${city.daySchedules.map(s => `
-        <div class="schedule-block">
-          <div class="schedule-title">${s.date} · ${s.title}</div>
-          ${s.note ? `<div class="schedule-note">${s.note}</div>` : ''}
-          ${s.items.map(it => `
-            <div class="schedule-row${it.activity.includes('💤') ? ' rest' : ''}">
-              <div class="schedule-time">${it.time}</div>
-              <div class="schedule-activity">${it.activity}</div>
-            </div>
-          `).join('')}
-        </div>
-      `).join('')}
-    </div>
-    ` : ''}
 
     <div class="section">
       <div class="section-title">📝 Notizen (für alle 5 sichtbar & bearbeitbar)</div>
@@ -1271,6 +1285,12 @@ async function loadNote(category) {
   if (!ta) return;
   const { data } = await sbClient.from('trip_notes').select('content').eq('category', category).maybeSingle();
   if (data) ta.value = data.content || '';
+}
+
+function toggleSchedule(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
 async function saveNote(category, value) {
