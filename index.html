@@ -223,6 +223,53 @@
     line-height: 1.5;
   }
 
+  /* ---- Detaillierter Tagesablauf ---- */
+  .schedule-block {
+    background: var(--paper);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(27,42,65,0.08);
+    border: 1px solid var(--line);
+    margin-bottom: 14px;
+  }
+  .schedule-title {
+    background: var(--navy);
+    color: var(--cream);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 14px;
+  }
+  .schedule-note {
+    font-size: 11.5px;
+    color: var(--muted);
+    font-style: italic;
+    padding: 10px 14px 4px;
+    line-height: 1.4;
+  }
+  .schedule-row {
+    display: flex;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--line);
+    gap: 10px;
+  }
+  .schedule-row:last-child { border-bottom: none; }
+  .schedule-row.rest {
+    background: rgba(184,134,11,0.08);
+  }
+  .schedule-time {
+    flex-shrink: 0;
+    width: 78px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    padding-top: 1px;
+  }
+  .schedule-activity {
+    font-size: 12.5px;
+    color: var(--ink);
+    line-height: 1.45;
+  }
+
   /* ---- Notizfeld ---- */
   .notes-box textarea {
     width: 100%;
@@ -705,6 +752,19 @@ const CITIES = {
       { date: '15.8. Fr', program: 'Harajuku/Takeshita-dori · Meiji-Schrein & Gärten · Shibuya Crossing & Hachiko · Sumo Show (Shinjuku) · Shibuya Sky zum Sonnenuntergang' },
       { date: '16.8. Sa', program: 'teamLab Planets (morgens oder abends) · Hamarikyu Gardens · Sushi-Kurs' },
     ],
+    daySchedules: [
+      { date: '14.8. Do', title: 'Asakusa & Akihabara – entspannt (1. voller Tag, Jetlag einplanen!)', note: 'Bewusst locker gehalten – nichts ist fest verplant, alles kann verschoben/getauscht werden, falls ihr müde seid.', items: [
+        { time: '8:00–9:00', activity: 'Frühstück in Ruhe (Beck\'s Coffee oder Saint Marc Café, 2–3 Min. vom Hotel)' },
+        { time: '9:00–9:20', activity: 'Ryogoku → Asakusa (JR Sobu-Linie, ca. 10 Min.)' },
+        { time: '9:20–11:30', activity: 'Senso-ji & Nakamise-dori, Streetfood probieren – ohne Zeitdruck' },
+        { time: '11:30–12:30', activity: 'Mittagessen in Asakusa (viel Auswahl direkt vor Ort)' },
+        { time: '12:30–13:00', activity: 'Zurück zum Hotel' },
+        { time: '13:00–14:30', activity: '💤 Ruhepause im Hotel – Nickerchen, Füße hochlegen (wichtig gegen Jetlag!)' },
+        { time: '14:30–17:30', activity: 'Akihabara – optional, nach Energielevel. Auch super am Abend, wenn euch tagsüber zu müde ist' },
+        { time: '18:00–19:30', activity: 'Abendessen: Chanko Kirishima oder Chanko Tomoegata (beide nah am Hotel)' },
+        { time: '20:00–21:30', activity: 'Karaoke – optional, kann auch auf einen anderen Abend verschoben werden' },
+      ]},
+    ],
     dayGroups: [
       { label: 'Asakusa & Akihabara', color: 'var(--day-a)', items: [
         { num: 2, title: 'Senso-ji & Nakamise-dori', lat: 35.7147651, lng: 139.7966553, meta: 'Tempel + Streetfood, abends stimmungsvoller' },
@@ -1007,6 +1067,24 @@ function buildPanel(cityKey, city) {
       <div class="section-title">🍽️ Restaurants <span class="count">${city.food.length}</span></div>
       ${city.food.map(f => cardHTML(f, COLOR_FOOD, true)).join('')}
     </div>
+
+    ${(city.daySchedules && city.daySchedules.length) ? `
+    <div class="section">
+      <div class="section-title">🕐 Detaillierter Tagesablauf</div>
+      ${city.daySchedules.map(s => `
+        <div class="schedule-block">
+          <div class="schedule-title">${s.date} · ${s.title}</div>
+          ${s.note ? `<div class="schedule-note">${s.note}</div>` : ''}
+          ${s.items.map(it => `
+            <div class="schedule-row${it.activity.includes('💤') ? ' rest' : ''}">
+              <div class="schedule-time">${it.time}</div>
+              <div class="schedule-activity">${it.activity}</div>
+            </div>
+          `).join('')}
+        </div>
+      `).join('')}
+    </div>
+    ` : ''}
 
     <div class="section">
       <div class="section-title">📝 Notizen (für alle 5 sichtbar & bearbeitbar)</div>
