@@ -720,7 +720,7 @@ const CITIES = {
         { num: 10, title: 'Shibuya Crossing & Hachiko', lat: 35.659482, lng: 139.7005596, meta: 'Ikonische Kreuzung' },
         { num: 11, title: 'Shibuya 109', lat: 35.6595771, lng: 139.698728, meta: 'Kult-Kaufhaus für junge Mode · sehr beliebt bei Teenagern, direkt an der Crossing' },
         { num: 12, title: 'Sumo Show – Shinjuku Sumo Club', lat: 35.7025151, lng: 139.7080267, link: 'https://www.tickets-tokyo.com/sumo-experience/', meta: '🥋 Live-Kämpfe von Ex-Ringern, Q&A, Ring-Challenge, Foto · 1,5 Std. · ~11.500–12.000 ¥/Person (ohne Essen, da ihr ja schon Chanko geplant habt) · vorab online buchen' },
-        { num: 13, title: 'Shibuya Sky', lat: 35.6586719, lng: 139.7019848, meta: 'Sunset-Slot vorab buchen!' },
+        { num: 13, title: 'Shibuya Sky', lat: 35.6586719, lng: 139.7019848, link: 'https://www.shibuya-scramble-square.com/sky/', meta: '📍 Shibuya Scramble Square, 2-24-12 Shibuya (14. Stock Eingang) · direkt an Shibuya Station<br>✅ <b>Gebucht:</b> 15.08.2026, Einlass 18:00–18:19 Uhr · 5 Tickets à 3.400 ¥ = 17.000 ¥<br>Kaufnr. 00396-2026-0808-8102-4940-0006 · via Webket, bezahlt' },
       ]},
       { label: 'teamLab', color: 'var(--day-c)', items: [
         { num: 14, title: 'teamLab Planets TOKYO', lat: 35.6491207, lng: 139.7897739, meta: 'Barfuß-Erlebnis · danach Sushi-Kurs in der Nähe' },
@@ -1554,6 +1554,7 @@ function fallbackCopy(text, cb) {
 const DOC_CATEGORIES = [
   { key: 'einreise', label: 'Einreise-QR-Codes', hint: 'z.B. Visit Japan Web QR-Code' },
   { key: 'shinkansen', label: 'Shinkansen QR-Codes', hint: 'z.B. SmartEX QR-Ticket' },
+  { key: 'attraktionen', label: 'Ticket-QR-Codes (Attraktionen)', hint: 'z.B. Shibuya Sky, teamLab, Sumo Show' },
   { key: 'sonstige', label: 'Sonstige Dokumente', hint: 'Versicherung, Notizen, Sonstiges' },
 ];
 
